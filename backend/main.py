@@ -1,5 +1,8 @@
-def main():
-    print("Hello from backend!")
+import uvicorn
+
+
+def main() -> None:
+    uvicorn.run("core.server:app")
 
 
 if __name__ == "__main__":
