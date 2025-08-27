@@ -1,0 +1,80 @@
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.egg-info/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Distribution / build
+build/
+dist/
+.eggs/
+
+# Cache / logs
+*.log
+*.tmp
+*.swp
+*.swo
+*.sqlite3
+db.sqlite3
+*.db
+
+# Editor / OS files
+.DS_Store
+.idea/
+.vscode/
+*.bak
+*.orig
+Thumbs.db
+
+# Tests & coverage
+tests/
+.coverage
+coverage/
+htmlcov/
+.mypy_cache/
+.pytest_cache/
+.tox/
+
+# Linting / type checking (local only)
+.ruff_cache/
+.mypy_cache/
+
+# Docker / Compose files not needed in image
+docker-compose*.yml
+.dockerignore
+Dockerfile.dev
+
+# Git & CI
+.git/
+.gitignore
+.gitattributes
+.github/
+.gitlab-ci.yml
+
+# Node (if using Next.js/React for frontend in same repo)
+node_modules/
+npm-debug.log
+pnpm-lock.yaml
+yarn.lock
+
+# Env & secrets (always keep out of images)
+.env
+.env.*
+secrets/
+*.pem
+*.key
+*.crt
+
+# Docs / misc
+docs/
+notebooks/
+*.ipynb
