@@ -31,4 +31,5 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 
 # Start the application with Uvicorn in production mode, using environment variable references
-CMD ["python", "-m", "uvicorn", "main:app", "--log-level", "info", "--host", "0.0.0.0", "--port", "$PORT"]
+# CMD ["python", "-m", "uvicorn", "main:app", "--log-level", "info", "--host", "0.0.0.0", "--port", $PORT]
+CMD ["python", "main.py"]
