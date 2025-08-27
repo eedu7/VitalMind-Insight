@@ -1,0 +1,30 @@
+
+services:
+    backend:
+        build:
+            context: ./backend
+            dockerfile: DockerFile
+            target: production
+        container_name: vitalmind-backend
+        env_file:
+            - .env
+        depends_on:
+            - database
+    database:
+        image: postgres:17.6-alpine3.22
+        container_name: vitalmind-database
+        restart: always
+        env_file:
+            - .env
+        environment:
+            - POSTGRES_USER: ${DB_USER}
+            - POSTGRES_PASSWORD: ${DB_PASSWORD}
+            - POSTGRES_DB: ${DB_NAME}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+        ports:
+            - "5432:5432"
+    
+volumes:
+    postgres_data:

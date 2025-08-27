@@ -1,1 +1,87 @@
-*.vscode
+# -------------------------------
+# Global ignores
+# -------------------------------
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+*.orig
+*.lock
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# VSCode / IDE settings
+.vscode/
+.idea/
+*.code-workspace
+
+# -------------------------------
+# Python (Backend)
+# -------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.eggs/
+*.sqlite3
+*.db
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build / distribution
+build/
+dist/
+*.spec
+*.manifest
+pip-wheel-metadata/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# -------------------------------
+# Node.js (Frontend)
+# -------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun.lockb
+
+# Next.js / React / Vite
+.next/
+out/
+dist/
+build/
+.cache/
+.eslintcache
+.stylelintcache
+
+# -------------------------------
+# Docker
+# -------------------------------
+.docker/
+docker-compose.override.yml
+
+# -------------------------------
+# Others
+# -------------------------------
+coverage/
+logs/
+tmp/
+cache/
