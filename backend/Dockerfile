@@ -14,9 +14,9 @@ ENV PATH="/root/.local/bin:$PATH"
 
 WORKDIR /app
 
-COPY ./pyproject.toml .
+COPY ./pyproject.toml uv.lock* /app/
 
-RUN uv sync
+RUN uv sync --frozen
 
 ## ------------------------------- Production Stage ------------------------------ ##
 FROM python:3.13-slim-bookworm AS production
@@ -29,8 +29,6 @@ COPY --from=builder /app/.venv .venv
 # Set up environment variables for production
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Expose the specified port for FastAPI
-EXPOSE $PORT
 
 # Start the application with Uvicorn in production mode, using environment variable references
-CMD ["uv", "run", "main.py"]
+CMD ["python", "-m", "uvicorn", "main:app", "--log-level", "info", "--host", "0.0.0.0", "--port", "$PORT"]

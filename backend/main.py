@@ -1,9 +1,9 @@
 import uvicorn
+from fastapi import FastAPI
 
+from core.server import server
 
-def main() -> None:
-    uvicorn.run("core.server:app", reload=True)
-
+app: FastAPI = server()
 
 if __name__ == "__main__":
-    main()
+    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)

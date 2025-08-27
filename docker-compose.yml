@@ -1,15 +1,16 @@
-
 services:
     backend:
         build:
             context: ./backend
-            dockerfile: DockerFile
+            dockerfile: Dockerfile
             target: production
         container_name: vitalmind-backend
         env_file:
             - .env
         depends_on:
             - database
+        ports:
+            - "8080:8080"
     database:
         image: postgres:17.6-alpine3.22
         container_name: vitalmind-database
@@ -17,9 +18,9 @@ services:
         env_file:
             - .env
         environment:
-            - POSTGRES_USER: ${DB_USER}
-            - POSTGRES_PASSWORD: ${DB_PASSWORD}
-            - POSTGRES_DB: ${DB_NAME}
+            POSTGRES_USER: ${DB_USER}
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
         volumes:
             - postgres_data:/var/lib/postgresql/data
 

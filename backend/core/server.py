@@ -17,6 +17,3 @@ def server() -> FastAPI:
     init_server(app_)
 
     return app_
-
-
-app = server()
