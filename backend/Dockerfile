@@ -30,4 +30,4 @@ COPY --from=builder /app/.venv .venv
 # Set up environment variables for production
 ENV PATH="/app/.venv/bin:$PATH"
 
-CMD ["python", "main.py"]
+CMD ["uvicorn", "core.server:app", "--host", "0.0.0.0", "--port", "8080"]

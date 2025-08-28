@@ -1,7 +1,10 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
+from db.session import get_session
 
 router = APIRouter(tags=["System"])
 
@@ -17,12 +20,12 @@ async def get_metadata() -> JSONResponse:
 
 
 @router.get("/health", status_code=status.HTTP_200_OK)
-async def health_check() -> JSONResponse:
-    content = {
-        "status": "Good",
-        "DB_USER": settings.DB_USER,
-        "DB_PASSWORD": settings.DB_PASSWORD,
-        "DB_HOST": settings.DB_HOST,
-        "DB_NAME": settings.DB_NAME,
-    }
+async def health_check(session: AsyncSession = Depends(get_session)) -> JSONResponse:
+    try:
+        result = await session.execute(text("SELECT 'OK'"))
+        db_status = result.scalar_one_or_none()
+        content = {"status": "Good", "db": db_status or "Failed", "DB_HOST": settings.DB_HOST}
+    except Exception as e:
+        content = {"status": "Bad", "db": str(e), "config": settings.model_dump()}
+
     return JSONResponse(status_code=status.HTTP_200_OK, content=content)
