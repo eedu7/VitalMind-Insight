@@ -19,7 +19,7 @@ async def get_metadata() -> JSONResponse:
 @router.get("/health", status_code=status.HTTP_200_OK)
 async def health_check() -> JSONResponse:
     content = {
-        "status": "ok",
+        "status": "Good",
         "DB_USER": settings.DB_USER,
         "DB_PASSWORD": settings.DB_PASSWORD,
         "DB_HOST": settings.DB_HOST,

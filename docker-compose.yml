@@ -10,7 +10,9 @@ services:
         depends_on:
             - database
         ports:
-            - "8080:8080"
+            - "${PORT}:${PORT}"
+        expose:
+            - "${PORT}"
     database:
         image: postgres:17.6-alpine3.22
         container_name: vitalmind-database

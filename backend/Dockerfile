@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 # Download the latest installer, install it and then remove it
 ADD https://astral.sh/uv/install.sh /install.sh
-RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh
+# RUN chmod -R 655 /install.sh && /install.sh && rm /install.sh
+RUN chmod +x /install.sh && /install.sh && rm /install.sh
 
 # Set up the UV environment path correctly
 ENV PATH="/root/.local/bin:$PATH"
@@ -29,7 +30,4 @@ COPY --from=builder /app/.venv .venv
 # Set up environment variables for production
 ENV PATH="/app/.venv/bin:$PATH"
 
-
-# Start the application with Uvicorn in production mode, using environment variable references
-# CMD ["python", "-m", "uvicorn", "main:app", "--log-level", "info", "--host", "0.0.0.0", "--port", $PORT]
 CMD ["python", "main.py"]
