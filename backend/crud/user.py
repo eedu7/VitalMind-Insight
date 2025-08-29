@@ -41,3 +41,7 @@ class UserCRUD(BaseCRUD[User]):
             conflicts["username"] = user.username == username
             conflicts["email"] = user.email == email
         return conflicts
+
+    async def create_user(self, email: str, username: str, password: str, session: AsyncSession) -> User:
+        user: User = User(username=username, email=email, password=password)
+        return await self.create(user, session)
