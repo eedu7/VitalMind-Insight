@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from .system import router as system_router
+from .health import router as health_router
 
 router = APIRouter(prefix="/api")
 
 
-__all__ = ["router", "system_router"]
+__all__ = ["router", "health_router"]

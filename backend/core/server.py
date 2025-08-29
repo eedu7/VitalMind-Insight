@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 
-from api import router, system_router
+from api import health_router, router
 
 
 def init_server(app_: FastAPI) -> None:
-    app_.include_router(router=system_router)
+    app_.include_router(router=health_router)
     app_.include_router(router)
 
 
