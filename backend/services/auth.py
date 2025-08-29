@@ -22,4 +22,10 @@ class AuthService:
         # Hash password
         hashed_password = Password.hash_password(password)
 
-        await self.crud.create_user(email=str(email), username=username, password=hashed_password, session=session)
+        created = await self.crud.create_user(
+            email=str(email), username=username, password=hashed_password, session=session
+        )
+
+        if created:
+            return created
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="User creation failed.")
