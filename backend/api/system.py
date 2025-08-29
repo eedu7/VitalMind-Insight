@@ -24,7 +24,7 @@ async def health_check(session: AsyncSession = Depends(get_session)) -> JSONResp
     try:
         result = await session.execute(text("SELECT 'OK'"))
         db_status = result.scalar_one_or_none()
-        content = {"status": "Good", "db": db_status or "Failed", "DB_HOST": settings.DB_HOST}
+        content = {"status": "Good", "db": db_status or "Failed", "config": settings.model_dump()}
     except Exception as e:
         content = {"status": "Bad", "db": str(e), "config": settings.model_dump()}
 

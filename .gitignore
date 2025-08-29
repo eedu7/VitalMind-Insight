@@ -15,7 +15,7 @@ Thumbs.db
 .env
 .env.*
 !.env.example
-!.env.production.example
+!.env.development.example
 
 # VSCode / IDE settings
 .vscode/
