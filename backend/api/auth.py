@@ -15,4 +15,9 @@ auth = AuthService(crud)
 
 @router.post("/register", response_model=UserOut)
 async def register(user: UserCreate, session: AsyncSession = Depends(get_session)):
-    return await auth.register(email=user.email, username=user.username, password=user.password, session=session)
+    return await auth.register(
+        email=user.email,
+        username=user.username,
+        password=user.password,
+        session=session,
+    )
