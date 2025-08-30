@@ -1,21 +1,23 @@
+from uuid import UUID
+
 from fastapi import HTTPException, status
 from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.config import settings
+from core.security.jwt_handler import JwtHandler
 from core.security.password import Password
 from crud import UserCRUD
+from db.models import User
+from schemas.auth import AuthOut
 
 
 class AuthService:
     def __init__(self, crud: UserCRUD) -> None:
         self.crud = crud
 
-    async def register(
-        self, email: EmailStr, username: str, password: str, session: AsyncSession
-    ):
-        conflicts = await self.crud.check_user_exists(
-            email=str(email), username=username, session=session
-        )
+    async def register(self, email: EmailStr, username: str, password: str, session: AsyncSession) -> AuthOut:
+        conflicts = await self.crud.check_user_exists(email=str(email), username=username, session=session)
 
         if conflicts["username"]:
             raise HTTPException(
@@ -24,23 +26,45 @@ class AuthService:
             )
 
         if conflicts["email"]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Email already exists"
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already exists")
 
         # Hash password
         hashed_password = Password.hash_password(password)
 
-        created = await self.crud.create_user(
+        user = await self.crud.create_user(
             email=str(email),
             username=username,
             password=hashed_password,
             session=session,
         )
 
-        if created:
-            return created
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="User creation failed.",
+        return self._generate_token(user.uuid, user.username, user.email)
+
+    async def login(self, email: EmailStr, password: str, session: AsyncSession) -> AuthOut:
+        user: User | None = await self.crud.get_by_email(str(email), session)
+
+        if not user:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found.")
+
+        if not Password.verify_password(password, user.password):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials.")
+
+        return self._generate_token(user.uuid, user.username, user.email)
+
+    def _generate_token(self, user_uuid: UUID, username: str, email: str) -> AuthOut:
+        access_payload = {"sub": str(user_uuid), "username": username, "email": email}
+        refresh_payload = {"sub": str(user_uuid)}
+
+        jwt_handler = JwtHandler(
+            secret_key=settings.JWT_SECRET_KEY,
+            algorithm=settings.JWT_ALGORITHM,
         )
+
+        access_token = jwt_handler.encode(
+            access_payload, token_type="access", expire_minutes=settings.JWT_ACCESS_EXPIRE_MINUTES
+        )
+        refresh_token = jwt_handler.encode(
+            refresh_payload, token_type="refresh", expire_minutes=settings.JWT_REFRESH_EXPIRE_MINUTES
+        )
+
+        return AuthOut(access_token=access_token, refresh_token=refresh_token)

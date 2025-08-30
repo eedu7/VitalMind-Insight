@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.user import UserCRUD
 from db.session import get_session
-from schemas.user import UserCreate, UserOut
+from schemas.auth import AuthLogin, AuthOut, AuthRegister
 from services.auth import AuthService
 
 router = APIRouter()
@@ -13,11 +13,16 @@ crud = UserCRUD()
 auth = AuthService(crud)
 
 
-@router.post("/register", response_model=UserOut)
-async def register(user: UserCreate, session: AsyncSession = Depends(get_session)):
+@router.post("/register", response_model=AuthOut)
+async def register(data: AuthRegister, session: AsyncSession = Depends(get_session)):
     return await auth.register(
-        email=user.email,
-        username=user.username,
-        password=user.password,
+        email=data.email,
+        username=data.username,
+        password=data.password,
         session=session,
     )
+
+
+@router.post("/login", response_model=AuthOut)
+async def login(data: AuthLogin, session: AsyncSession = Depends(get_session)):
+    pass
