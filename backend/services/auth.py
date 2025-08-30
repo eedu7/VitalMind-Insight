@@ -15,6 +15,10 @@ from schemas.auth import AuthOut
 class AuthService:
     def __init__(self, crud: UserCRUD) -> None:
         self.crud = crud
+        self.jwt_handler: JwtHandler = JwtHandler(
+            secret_key=settings.JWT_SECRET_KEY,
+            algorithm=settings.JWT_ALGORITHM,
+        )
 
     async def register(self, email: EmailStr, username: str, password: str, session: AsyncSession) -> AuthOut:
         conflicts = await self.crud.check_user_exists(email=str(email), username=username, session=session)
@@ -55,15 +59,10 @@ class AuthService:
         access_payload = {"sub": str(user_uuid), "username": username, "email": email}
         refresh_payload = {"sub": str(user_uuid)}
 
-        jwt_handler = JwtHandler(
-            secret_key=settings.JWT_SECRET_KEY,
-            algorithm=settings.JWT_ALGORITHM,
-        )
-
-        access_token = jwt_handler.encode(
+        access_token = self.jwt_handler.encode(
             access_payload, token_type="access", expire_minutes=settings.JWT_ACCESS_EXPIRE_MINUTES
         )
-        refresh_token = jwt_handler.encode(
+        refresh_token = self.jwt_handler.encode(
             refresh_payload, token_type="refresh", expire_minutes=settings.JWT_REFRESH_EXPIRE_MINUTES
         )
 
