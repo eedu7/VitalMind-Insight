@@ -30,6 +30,21 @@ services:
             - "${DB_PORT}:5432"
         expose:
             - "${DB_PORT}"
+
+    redis:
+        image: redis:8.2.1-alpine3.22
+        container_name: vitalmind-redis
+        restart: always
+        env_file:
+            - .env
+        command: ["redis-server", "--appendonly", "yes"]
+        ports:
+            - "${REDIS_PORT}:6379"
+        expose:
+            - "${REDIS_PORT}"
+        volumes:
+            - redis_data:/data
     
 volumes:
     postgres_data:
+    redis_data:
