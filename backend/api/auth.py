@@ -25,4 +25,4 @@ async def register(data: AuthRegister, session: AsyncSession = Depends(get_sessi
 
 @router.post("/login", response_model=AuthOut)
 async def login(data: AuthLogin, session: AsyncSession = Depends(get_session)):
-    pass
+    return await auth.login(email=data.email, password=data.password, session=session)

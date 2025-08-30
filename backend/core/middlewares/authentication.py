@@ -36,7 +36,7 @@ class AuthBackend(AuthenticationBackend):
             return False, None
 
         payload = jwt_handler.decode(token, expected_type="access")
-        user_id = payload.get("user_id", None)
+        user_id = payload.get("sub", None)
 
         if user_id:
             current_user.uuid = user_id
