@@ -4,7 +4,7 @@ from uuid import UUID
 from sqlalchemy import and_, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import Base
+from db.models import Base
 
 ModelType = TypeVar("ModelType", bound=Base)
 
@@ -19,9 +19,7 @@ class BaseCRUD(Generic[ModelType]):
     async def get_by_uuid(self, uuid: UUID, session: AsyncSession) -> ModelType | None:
         return await self.get_by(field="uuid", value=uuid, session=session)
 
-    async def get_by(
-        self, field: str, value: Any, session: AsyncSession
-    ) -> ModelType | None:
+    async def get_by(self, field: str, value: Any, session: AsyncSession) -> ModelType | None:
         column = getattr(self.model, field, None)
 
         if not column:
@@ -34,9 +32,7 @@ class BaseCRUD(Generic[ModelType]):
     async def get_by_filters(
         self, session: AsyncSession, unique: bool = False, **filters: Any
     ) -> Union[Sequence[ModelType], ModelType, None]:
-        conditions = [
-            getattr(self.model, field) == value for field, value in filters.items()
-        ]
+        conditions = [getattr(self.model, field) == value for field, value in filters.items()]
 
         stmt = select(self.model).where(and_(*conditions))  # type: ignore
         result = await session.execute(stmt)
@@ -52,9 +48,7 @@ class BaseCRUD(Generic[ModelType]):
         await session.refresh(obj)
         return obj
 
-    async def update(
-        self, _id: int, values: Dict[str, Any], session: AsyncSession
-    ) -> None:
+    async def update(self, _id: int, values: Dict[str, Any], session: AsyncSession) -> None:
         query = update(self.model).where(self.model.id == _id).values(**values)  # type: ignore
         await session.execute(query)
         await session.commit()
