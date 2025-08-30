@@ -6,8 +6,8 @@ interface LayoutProps {
 
 export default function Layout({ child }: LayoutProps) {
 	return (
-		<div>
-			<main className="h-4 w-4 border bg-green-500 text-blue-500 shadow-lg">{child}</main>
+		<div className="flex h-screen flex-col">
+			<main className="flex-grow">{child}</main>
 		</div>
 	);
 }
