@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.dependencies import services
 from db.session import get_session
-from schemas.auth import AuthLogin, AuthOut, AuthRegister
+from schemas.auth import AuthLogin, AuthLogOut, AuthOut, AuthRegister
 from services import AuthService
 
 router = APIRouter()
@@ -41,3 +41,8 @@ async def login(
     session: AsyncSession = Depends(get_session),
 ):
     return await auth_service.login(email=data.email, password=data.password, session=session)
+
+
+@router.post("/logout")
+async def logout(data: AuthLogOut):
+    pass

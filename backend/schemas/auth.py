@@ -38,8 +38,11 @@ class AuthLogin(BaseModel):
     )
 
 
-# For API responses
-class AuthOut(BaseModel):
+class AuthLogOut(BaseModel):
     access_token: str
     refresh_token: str
+
+
+# For API responses
+class AuthOut(AuthLogOut):
     token_type: str = "bearer"

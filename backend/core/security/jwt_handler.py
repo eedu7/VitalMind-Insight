@@ -1,4 +1,5 @@
 from typing import Any, Dict, Literal
+from uuid import uuid4
 
 import jwt
 from fastapi import HTTPException, status
@@ -22,7 +23,9 @@ class JwtHandler:
 
     def encode(self, payload: Dict[str, Any], token_type: TokenType, expire_minutes: int = 1440) -> str:
         expire_time = get_timestamp(minutes=expire_minutes)
-        payload.update({"exp": expire_time, "type": token_type, "iss": self.issuer, "iat": get_timestamp()})
+        payload.update(
+            {"exp": expire_time, "type": token_type, "iss": self.issuer, "iat": get_timestamp(), "jti": str(uuid4())}
+        )
         return jwt.encode(  # type: ignore
             payload,
             self.secret_key,
