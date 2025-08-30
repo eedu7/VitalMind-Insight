@@ -16,7 +16,7 @@ jwt_handler: JwtHandler = JwtHandler(
 
 class AuthBackend(AuthenticationBackend):
     async def authenticate(self, conn: HTTPConnection) -> Tuple[bool, CurrentUser | None]:  # type: ignore
-        current_user = CurrentUser()
+        current_user = CurrentUser(uuid=None)
 
         authorization: str | None = conn.headers.get("Authorization")
 
