@@ -1,6 +1,14 @@
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
+
+
+class UserOut(BaseModel):
+    uuid: UUID
+    email: EmailStr
+    username: str
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class CurrentUser(BaseModel):

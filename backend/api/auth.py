@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from crud.user import UserCRUD
 from db.session import get_session
 from schemas.auth import AuthLogin, AuthOut, AuthRegister
-from services.auth import AuthService
+from services import AuthService
 
 router = APIRouter()
 
