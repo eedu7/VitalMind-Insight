@@ -5,8 +5,8 @@ from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 
 from api import health_router, router
-from core.limiter import lifespan
 from core.middlewares import AuthBackend, AuthenticationMiddleware
+from core.security import lifespan
 
 
 def init_server(app_: FastAPI) -> None:
