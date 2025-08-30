@@ -11,4 +11,4 @@ user_service = UserService(crud)
 
 
 async def get_current_active_user(request: Request, session: AsyncSession = Depends(get_session)) -> User:
-    return await user_service.get_by_uuid(request.user.id, session)
+    return await user_service.get_by_uuid(request.user.uuid, session)
