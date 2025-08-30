@@ -1,13 +1,13 @@
 import React from "react";
 
 interface LayoutProps {
-	child: React.ReactNode;
+	children: React.ReactElement;
 }
 
-export default function Layout({ child }: LayoutProps) {
+export default function Layout({ children }: LayoutProps) {
 	return (
 		<div className="flex h-screen flex-col">
-			<main className="flex-grow">{child}</main>
+			<main className="flex h-full flex-1 items-center justify-center">{children}</main>
 		</div>
 	);
 }
