@@ -22,6 +22,11 @@ class Settings(BaseSettings):
     DB_PORT: int
     PORT: int = 8080
 
+    JWT_SECRET_KEY: str = "supersecretkey"
+    JWT_ALGORITHM: str = "HS256"
+    JWT_ACCESS_EXPIRE_MINUTES: int = 60 * 24
+    JWT_REFRESH_EXPIRE_MINUTES: int = 60 * 24 * 7
+
     model_config = SettingsConfigDict(env_file=str(ENV_FILE), extra="ignore")
 
     @property
