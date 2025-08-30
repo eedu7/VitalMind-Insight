@@ -4,14 +4,8 @@ from fastapi.requests import HTTPConnection
 from starlette.authentication import AuthenticationBackend
 from starlette.middleware.authentication import AuthenticationMiddleware as BaseAuthenticationMiddleware
 
-from core.config import settings
-from core.security import JwtHandler
+from core.security import jwt_handler
 from schemas.user import CurrentUser
-
-jwt_handler: JwtHandler = JwtHandler(
-    secret_key=settings.JWT_SECRET_KEY,
-    algorithm=settings.JWT_ALGORITHM,
-)
 
 
 class AuthBackend(AuthenticationBackend):

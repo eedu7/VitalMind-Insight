@@ -5,7 +5,7 @@ from core.dependencies import AuthenticationRequired, get_current_active_user
 from db.models import User
 from schemas.user import UserOut
 
-router = APIRouter(dependencies=[Depends(AuthenticationRequired)])
+router = APIRouter(dependencies=[Depends(AuthenticationRequired())])
 
 
 @router.get(

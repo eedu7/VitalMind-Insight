@@ -5,11 +5,11 @@ from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
+from core.security import jwt_handler, token_blacklist
 from core.security.blacklist import TokenBlacklist
 from core.security.jwt_handler import JwtHandler
 from core.security.password import Password
 from crud import UserCRUD
-from db import redis_client
 from db.models import User
 from schemas.auth import AuthOut
 
@@ -17,11 +17,8 @@ from schemas.auth import AuthOut
 class AuthService:
     def __init__(self, crud: UserCRUD) -> None:
         self.crud = crud
-        self.jwt_handler: JwtHandler = JwtHandler(
-            secret_key=settings.JWT_SECRET_KEY,
-            algorithm=settings.JWT_ALGORITHM,
-        )
-        self.blacklist: TokenBlacklist = TokenBlacklist(redis_client=redis_client)
+        self.jwt_handler: JwtHandler = jwt_handler
+        self.blacklist: TokenBlacklist = token_blacklist
 
     async def register(self, email: EmailStr, username: str, password: str, session: AsyncSession) -> AuthOut:
         conflicts = await self.crud.check_user_exists(email=str(email), username=username, session=session)

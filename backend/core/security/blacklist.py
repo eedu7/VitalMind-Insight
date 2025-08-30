@@ -10,7 +10,7 @@ class TokenBlacklist:
         self.prefix = prefix
 
     def _generate_key(self, jti: str) -> str:
-        return f"{self.prefix}/{jti}"
+        return f"{self.prefix}::{jti}"
 
     async def add(self, payload: Dict[str, Any]) -> None:
         jti: str | None = payload.get("jti", None)
