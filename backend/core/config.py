@@ -15,12 +15,22 @@ class Settings(BaseSettings):
     DB_NAME: str
     DB_HOST: str
     DB_PORT: int
+
+    # Redis
+    REDIS_HOST: str
+    REDIS_PORT: int
+
+    # App
     PORT: int = 8080
 
+    # JWT
     JWT_SECRET_KEY: str = "supersecretkey"
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_EXPIRE_MINUTES: int = 60 * 24
     JWT_REFRESH_EXPIRE_MINUTES: int = 60 * 24 * 7
+
+    # Environment
+    ENVIRONMENT: str
 
     model_config = SettingsConfigDict(env_file=str(ENV_FILE), extra="ignore")
 
