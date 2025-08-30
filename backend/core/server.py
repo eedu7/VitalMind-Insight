@@ -5,6 +5,7 @@ from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 
 from api import health_router, router
+from core.limiter import lifespan
 from core.middlewares import AuthBackend, AuthenticationMiddleware
 
 
@@ -23,7 +24,9 @@ def make_middleware() -> List[Middleware]:
 
 
 def server() -> FastAPI:
-    app_ = FastAPI(title="VitalMind Insight", description="VitalMind Description", middleware=make_middleware())
+    app_ = FastAPI(
+        title="VitalMind Insight", description="VitalMind Description", lifespan=lifespan, middleware=make_middleware()
+    )
 
     init_server(app_)
 
