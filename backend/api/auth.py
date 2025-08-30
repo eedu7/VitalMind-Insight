@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status
+from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.dependencies import services
@@ -9,7 +10,12 @@ from services import AuthService
 router = APIRouter()
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=AuthOut)
+@router.post(
+    "/register",
+    status_code=status.HTTP_201_CREATED,
+    response_model=AuthOut,
+    dependencies=[Depends(RateLimiter(times=2, minutes=1))],
+)
 async def register(
     data: AuthRegister,
     auth_service: AuthService = Depends(services.get_auth_service),
@@ -23,7 +29,12 @@ async def register(
     )
 
 
-@router.post("/login", status_code=status.HTTP_200_OK, response_model=AuthOut)
+@router.post(
+    "/login",
+    status_code=status.HTTP_200_OK,
+    response_model=AuthOut,
+    dependencies=[Depends(RateLimiter(times=5, minutes=1))],
+)
 async def login(
     data: AuthLogin,
     auth_service: AuthService = Depends(services.get_auth_service),
