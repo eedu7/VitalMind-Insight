@@ -1,10 +1,11 @@
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.dependencies import services
 from db import get_session
 from db.models.user import User
 from services import UserService
+
+from .services import services
 
 
 async def get_current_active_user(
