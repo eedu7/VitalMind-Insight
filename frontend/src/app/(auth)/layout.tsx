@@ -1,11 +1,13 @@
-import React from 'react'
+import React from "react";
 
 interface LayoutProps {
-    child: React.ReactNode;
+	child: React.ReactNode;
 }
 
 export default function Layout({ child }: LayoutProps) {
-  return (
-    <div>{child}</div>
-  )
+	return (
+		<div>
+			<main className="h-4 w-4 border bg-green-500 text-blue-500 shadow-lg">{child}</main>
+		</div>
+	);
 }
