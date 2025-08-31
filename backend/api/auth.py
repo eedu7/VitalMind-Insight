@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, Response, status
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.config import settings
 from core.dependencies import services
 from db.session import get_session
 from schemas.auth import AuthLogin, AuthLogOut, AuthOut, AuthRegister
 from services import AuthService
+from utils import CookieManager
 
 router = APIRouter()
 
@@ -70,22 +70,7 @@ async def webstie_register(
         session=session,
     )
 
-    response.set_cookie(
-        key="access_token",
-        value=token.access_token,
-        httponly=True,
-        secure=True,
-        samesite="strict",
-        max_age=settings.JWT_ACCESS_EXPIRE_MINUTES,
-    )
-    response.set_cookie(
-        key="refresh_token",
-        value=token.refresh_token,
-        httponly=True,
-        secure=True,
-        samesite="strict",
-        max_age=settings.JWT_REFRESH_EXPIRE_MINUTES,
-    )
+    CookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
 
 
 @router.post(
@@ -100,22 +85,7 @@ async def web_login(
     session: AsyncSession = Depends(get_session),
 ):
     token = await auth_service.login(email=data.email, password=data.password, session=session)
-    response.set_cookie(
-        key="access_token",
-        value=token.access_token,
-        httponly=True,
-        secure=True,
-        samesite="strict",
-        max_age=settings.JWT_ACCESS_EXPIRE_MINUTES,
-    )
-    response.set_cookie(
-        key="refresh_token",
-        value=token.refresh_token,
-        httponly=True,
-        secure=True,
-        samesite="strict",
-        max_age=settings.JWT_REFRESH_EXPIRE_MINUTES,
-    )
+    CookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
 
 
 @router.post(
@@ -127,15 +97,4 @@ async def web_logout(
     auth_service: AuthService = Depends(services.get_auth_service),
 ):
     await auth_service.logout(access_token=data.access_token, refresh_token=data.refresh_token)
-    response.delete_cookie(
-        key="access_token",
-        httponly=True,
-        secure=True,
-        samesite="strict",
-    )
-    response.delete_cookie(
-        key="refresh_token",
-        httponly=True,
-        secure=True,
-        samesite="strict",
-    )
+    CookieManager.delete_token(response=response)
