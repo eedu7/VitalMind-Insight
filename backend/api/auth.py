@@ -86,7 +86,7 @@ async def login(
     response_model=AuthOut,
     dependencies=[Depends(RateLimiter(times=5, minutes=1))],
 )
-async def login(
+async def web_login(
     data: AuthLogin,
     response: Response,
     auth_service: AuthService = Depends(services.get_auth_service),
@@ -117,3 +117,24 @@ async def logout(
     auth_service: AuthService = Depends(services.get_auth_service),
 ):
     await auth_service.logout(access_token=data.access_token, refresh_token=data.refresh_token)
+
+
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(RateLimiter(times=2, minutes=1))])
+async def web_logout(
+    data: AuthLogOut,
+    response: Response,
+    auth_service: AuthService = Depends(services.get_auth_service),
+):
+    await auth_service.logout(access_token=data.access_token, refresh_token=data.refresh_token)
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        secure=True,
+        samesite="strict",
+    )
+    response.delete_cookie(
+        key="refresh_token",
+        httponly=True,
+        secure=True,
+        samesite="strict",
+    )
