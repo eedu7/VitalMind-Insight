@@ -1,28 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { registerFormSchema, RegisterFormValues } from "@/features/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MailIcon, User } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import IconInput from "../../_components/ui/IconInput";
 import { PasswordInput } from "../../_components/ui/PasswordInput";
 
-const registerFormSchema = z.object({
-	username: z
-		.string()
-		.min(3, "Username must be at least 3 characters")
-		.max(20, "Username must be at most 20 characters"),
-	email: z.string().email("Invalid email address"),
-	password: z
-		.string()
-		.min(6, "Password must be at least 6 characters")
-		.max(100, "Password must be at most 100 characters"),
-});
-
 export const RegisterForm = () => {
-	const form = useForm<z.infer<typeof registerFormSchema>>({
+	const form = useForm<RegisterFormValues>({
 		resolver: zodResolver(registerFormSchema),
 		defaultValues: {
 			username: "",
@@ -31,50 +19,50 @@ export const RegisterForm = () => {
 		},
 	});
 
-	const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+	const onSubmit = async (values: RegisterFormValues) => {
 		console.table(values);
 	};
 	return (
-		<Form { ...form }>
-			<form onSubmit={ form.handleSubmit(onSubmit) } className="space-y-4">
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 				<FormField
-					control={ form.control }
+					control={form.control}
 					name="username"
-					render={ ({ field }) => (
+					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Username</FormLabel>
 							<FormControl>
-								<IconInput icon={ User } { ...field } placeholder="Enter your username" />
+								<IconInput icon={User} {...field} placeholder="Enter your username" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
-					) }
+					)}
 				/>
 				<FormField
-					control={ form.control }
+					control={form.control}
 					name="email"
-					render={ ({ field }) => (
+					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Email</FormLabel>
 							<FormControl>
-								<IconInput icon={ MailIcon } { ...field } placeholder="Enter your email address" />
+								<IconInput icon={MailIcon} {...field} placeholder="Enter your email address" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
-					) }
+					)}
 				/>
 				<FormField
-					control={ form.control }
+					control={form.control}
 					name="password"
-					render={ ({ field }) => (
+					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<PasswordInput { ...field } placeholder="Password" />
+								<PasswordInput {...field} placeholder="Password" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
-					) }
+					)}
 				/>
 
 				<Button className="w-full">Register</Button>

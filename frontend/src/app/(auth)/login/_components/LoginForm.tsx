@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { loginFormSchema, LoginFormValues } from "@/features/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MailIcon } from "lucide-react";
 import Link from "next/link";
@@ -9,16 +10,8 @@ import z from "zod";
 import IconInput from "../../_components/ui/IconInput";
 import { PasswordInput } from "../../_components/ui/PasswordInput";
 
-const loginFormSchema = z.object({
-	email: z.string().email("Invalid email address"),
-	password: z
-		.string()
-		.min(6, "Password must be at least 6 characters")
-		.max(100, "Password must be at most 100 characters"),
-});
-
 export const LoginForm = () => {
-	const form = useForm<z.infer<typeof loginFormSchema>>({
+	const form = useForm<LoginFormValues>({
 		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
 			password: "",
@@ -30,33 +23,33 @@ export const LoginForm = () => {
 		console.table(values);
 	};
 	return (
-		<Form { ...form }>
-			<form onSubmit={ form.handleSubmit(onSubmit) } className="space-y-4">
+		<Form {...form}>
+			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 				<FormField
-					control={ form.control }
+					control={form.control}
 					name="email"
-					render={ ({ field }) => (
+					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Email</FormLabel>
 							<FormControl>
-								<IconInput icon={ MailIcon } { ...field } placeholder="Enter your email address" />
+								<IconInput icon={MailIcon} {...field} placeholder="Enter your email address" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
-					) }
+					)}
 				/>
 				<FormField
-					control={ form.control }
+					control={form.control}
 					name="password"
-					render={ ({ field }) => (
+					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<PasswordInput { ...field } placeholder="Password" />
+								<PasswordInput {...field} placeholder="Password" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
-					) }
+					)}
 				/>
 
 				<Button className="w-full">Register</Button>
