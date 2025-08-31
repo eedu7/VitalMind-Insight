@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { loginFormSchema, LoginFormValues } from "@/features/auth";
+import { loginFormSchema, LoginFormValues, useAuth } from "@/features/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MailIcon } from "lucide-react";
+import { Loader2, MailIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -19,8 +19,10 @@ export const LoginForm = () => {
 		},
 	});
 
+	const { login } = useAuth();
+
 	const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
-		console.table(values);
+		login.mutateAsync(values);
 	};
 	return (
 		<Form {...form}>
@@ -52,7 +54,9 @@ export const LoginForm = () => {
 					)}
 				/>
 
-				<Button className="w-full">Register</Button>
+				<Button className="w-full" disabled={login.isPending}>
+					{login.isPending ? <Loader2 className="repeat-infinite animate-spin" /> : <span>Login</span>}
+				</Button>
 				<div className="flex w-full items-center justify-between">
 					<Link href="#" className="text-muted-foreground hover:text-primary text-sm">
 						Forget password
