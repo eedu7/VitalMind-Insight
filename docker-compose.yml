@@ -9,6 +9,7 @@ services:
             - .env
         depends_on:
             - database
+            - redis
         ports:
             - "${PORT}:${PORT}"
         expose:
