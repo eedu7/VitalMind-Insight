@@ -3,10 +3,10 @@ from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.dependencies import services
+from core.security import AuthCookieManager
 from db.session import get_session
 from schemas.auth import AuthLogin, AuthLogOut, AuthOut, AuthRegister
 from services import AuthService
-from utils import CookieManager
 
 router = APIRouter()
 
@@ -70,7 +70,7 @@ async def webstie_register(
         session=session,
     )
 
-    CookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
+    AuthCookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
 
 
 @router.post(
@@ -85,16 +85,13 @@ async def web_login(
     session: AsyncSession = Depends(get_session),
 ):
     token = await auth_service.login(email=data.email, password=data.password, session=session)
-    CookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
+    AuthCookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
 
 
 @router.post(
     "/web/logout", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(RateLimiter(times=2, minutes=1))]
 )
 async def web_logout(
-    data: AuthLogOut,
     response: Response,
-    auth_service: AuthService = Depends(services.get_auth_service),
 ):
-    await auth_service.logout(access_token=data.access_token, refresh_token=data.refresh_token)
-    CookieManager.delete_token(response=response)
+    AuthCookieManager.delete_token(response=response)

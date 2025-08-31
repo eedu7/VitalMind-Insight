@@ -1,3 +1,4 @@
+from enum import StrEnum
 from typing import Dict
 
 from fastapi import Request, Response
@@ -5,14 +6,16 @@ from fastapi import Request, Response
 from core.config import settings
 
 
-class CookieManager:
-    _ACCESS_TOKEN_KEY: str = "access_token"
-    _REFRESH_TOKEN_KEY: str = "refresh_token"
+class AuthCookieKey(StrEnum):
+    ACCESS = "access_token"
+    REFRESH = "refresh_token"
 
+
+class AuthCookieManager:
     @classmethod
     def set_tokens(cls, response: Response, access_token: str, refresh_token: str) -> None:
         response.set_cookie(
-            key=cls._ACCESS_TOKEN_KEY,
+            key=AuthCookieKey.ACCESS,
             value=access_token,
             httponly=True,
             secure=True,
@@ -21,7 +24,7 @@ class CookieManager:
         )
 
         response.set_cookie(
-            key=cls._REFRESH_TOKEN_KEY,
+            key=AuthCookieKey.REFRESH,
             value=refresh_token,
             httponly=True,
             secure=True,
@@ -31,12 +34,12 @@ class CookieManager:
 
     @classmethod
     def delete_token(cls, response: Response) -> None:
-        response.delete_cookie(key=cls._ACCESS_TOKEN_KEY, httponly=True, secure=True, samesite="strict")
-        response.delete_cookie(key=cls._REFRESH_TOKEN_KEY, httponly=True, secure=True, samesite="strict")
+        response.delete_cookie(key=AuthCookieKey.ACCESS, httponly=True, secure=True, samesite="strict")
+        response.delete_cookie(key=AuthCookieKey.REFRESH, httponly=True, secure=True, samesite="strict")
 
     @classmethod
     def get_token(cls, request: Request) -> Dict[str, str | None]:
         return {
-            "access_token": request.cookies.get(cls._ACCESS_TOKEN_KEY),
-            "refresh_token": request.cookies.get(cls._REFRESH_TOKEN_KEY),
+            "access_token": request.cookies.get(AuthCookieKey.ACCESS),
+            "refresh_token": request.cookies.get(AuthCookieKey.REFRESH),
         }

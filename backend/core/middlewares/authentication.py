@@ -1,13 +1,11 @@
 from typing import Tuple
 
-from fastapi import Request
 from fastapi.requests import HTTPConnection
 from starlette.authentication import AuthenticationBackend
 from starlette.middleware.authentication import AuthenticationMiddleware as BaseAuthenticationMiddleware
 
-from core.security import jwt_handler
+from core.security import AuthCookieKey, jwt_handler
 from schemas.user import CurrentUser
-from utils import CookieManager
 
 
 class AuthBackend(AuthenticationBackend):
@@ -22,20 +20,19 @@ class AuthBackend(AuthenticationBackend):
 
                 if scheme.lower() != "bearer":
                     token = None
-
-            except ValueError:
+            except Exception:
                 token = None
 
-        if not token and isinstance(conn, Request):
-            tokens = CookieManager.get_token(conn)
-            token = tokens.get("access_token")
+        if not token:
+            token = conn.cookies.get(AuthCookieKey.ACCESS)
 
         if not token:
             return False, None
-
-        payload = jwt_handler.decode(token, expected_type="access")
-        user_id = payload.get("sub", None)
-
+        try:
+            payload = jwt_handler.decode(token, expected_type="access")
+            user_id = payload.get("sub", None)
+        except Exception:
+            return False, None
         if user_id:
             current_user.uuid = user_id
             return True, current_user
