@@ -3,3 +3,9 @@ import { loginFormSchema, registerFormSchema } from "./schemas";
 
 export type LoginFormValues = z.infer<typeof loginFormSchema>;
 export type RegisterFormValues = z.infer<typeof registerFormSchema>;
+
+export type AuthResponse = {
+	access_token: string;
+	refresh_token: string;
+	token_type: string;
+};
