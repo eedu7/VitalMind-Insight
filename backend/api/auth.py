@@ -91,7 +91,6 @@ async def webstie_register(
 @router.post(
     "/web/login",
     status_code=status.HTTP_200_OK,
-    response_model=AuthOut,
     dependencies=[Depends(RateLimiter(times=5, minutes=1))],
 )
 async def web_login(
