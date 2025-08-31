@@ -11,7 +11,7 @@ interface Props {
 
 export const FormCard = ({ title, className, description, children }: Props) => {
 	return (
-		<Card className={cn("w-[95%] md:w-[384px]", className)}>
+		<Card className={cn("max-auto w-[95%] max-w-md", className)}>
 			<CardHeader>
 				<CardTitle>{title}</CardTitle>
 				<CardDescription>{description}</CardDescription>
