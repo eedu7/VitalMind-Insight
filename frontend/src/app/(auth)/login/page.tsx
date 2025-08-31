@@ -1,3 +1,10 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Login - VitalMind Insight",
+	description: "Login to your VitalMind Insight account.",
+};
+
 export default function Page() {
-	return <div className="text-accent text-9xl">Page</div>;
+	return <div>Login Page</div>;
 }
