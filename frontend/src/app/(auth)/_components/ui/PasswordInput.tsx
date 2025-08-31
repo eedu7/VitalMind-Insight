@@ -5,9 +5,7 @@ import { useId, useState } from "react";
 
 import { Input } from "@/components/ui/input";
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {}
-
-export const PasswordInput: React.FC<Props> = (props) => {
+export const PasswordInput: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = (props) => {
 	const id = useId();
 	const [isVisible, setIsVisible] = useState<boolean>(false);
 

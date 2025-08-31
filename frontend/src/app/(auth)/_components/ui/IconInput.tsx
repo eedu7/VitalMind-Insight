@@ -1,9 +1,10 @@
 import { useId } from "react";
 
 import { Input } from "@/components/ui/input";
+import { LucideIcon } from "lucide-react";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-	icon: React.ComponentType<{ size?: number; [key: string]: any }>;
+	icon: LucideIcon;
 }
 
 export default function IconInput({ icon: Icon, ...props }: Props) {

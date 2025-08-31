@@ -35,46 +35,46 @@ export const RegisterForm = () => {
 		console.table(values);
 	};
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+		<Form { ...form }>
+			<form onSubmit={ form.handleSubmit(onSubmit) } className="space-y-4">
 				<FormField
-					control={form.control}
+					control={ form.control }
 					name="username"
-					render={({ field }) => (
+					render={ ({ field }) => (
 						<FormItem>
 							<FormLabel>Username</FormLabel>
 							<FormControl>
-								<IconInput icon={User} {...field} placeholder="Enter your username" />
+								<IconInput icon={ User } { ...field } placeholder="Enter your username" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
-					)}
+					) }
 				/>
 				<FormField
-					control={form.control}
+					control={ form.control }
 					name="email"
-					render={({ field }) => (
+					render={ ({ field }) => (
 						<FormItem>
 							<FormLabel>Email</FormLabel>
 							<FormControl>
-								<IconInput icon={MailIcon} {...field} placeholder="Enter your email address" />
+								<IconInput icon={ MailIcon } { ...field } placeholder="Enter your email address" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
-					)}
+					) }
 				/>
 				<FormField
-					control={form.control}
+					control={ form.control }
 					name="password"
-					render={({ field }) => (
+					render={ ({ field }) => (
 						<FormItem>
 							<FormLabel>Password</FormLabel>
 							<FormControl>
-								<PasswordInput {...field} placeholder="Password" />
+								<PasswordInput { ...field } placeholder="Password" />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
-					)}
+					) }
 				/>
 
 				<Button className="w-full">Register</Button>

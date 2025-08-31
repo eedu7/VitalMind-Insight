@@ -13,14 +13,14 @@ interface Props {
 
 export const FormCard = ({ title, className, description, children }: Props) => {
 	return (
-		<Card className={cn("max-auto w-[95%] max-w-md", className)}>
+		<Card className={ cn("max-auto w-[95%] max-w-md", className) }>
 			<CardHeader>
-				<CardTitle>{title}</CardTitle>
-				<CardDescription>{description}</CardDescription>
+				<CardTitle>{ title }</CardTitle>
+				<CardDescription>{ description }</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-2">
-				{children}
-				{/* TODO: Add the privacy policy link */}
+				{ children }
+				{ /* TODO: Add the privacy policy link */ }
 
 				<div className="flex items-center">
 					<hr className="flex-grow border-t border-gray-300" />
@@ -33,7 +33,7 @@ export const FormCard = ({ title, className, description, children }: Props) => 
 				<SocialLogin />
 				<div>
 					<p className="text-xs text-gray-400">
-						By continuing, you acknowledge VitalMind Insight&nbsp;s{" "}
+						By continuing, you acknowledge VitalMind Insight&nbsp;s{ " " }
 						<Link
 							href="#"
 							className="hover:text-bold hover:text-primary text-gray-800 transition-all duration-300 hover:underline"
