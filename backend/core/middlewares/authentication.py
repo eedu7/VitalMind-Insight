@@ -1,11 +1,13 @@
 from typing import Tuple
 
+from fastapi import Request
 from fastapi.requests import HTTPConnection
 from starlette.authentication import AuthenticationBackend
 from starlette.middleware.authentication import AuthenticationMiddleware as BaseAuthenticationMiddleware
 
 from core.security import jwt_handler
 from schemas.user import CurrentUser
+from utils import CookieManager
 
 
 class AuthBackend(AuthenticationBackend):
@@ -13,18 +15,20 @@ class AuthBackend(AuthenticationBackend):
         current_user = CurrentUser(uuid=None)
 
         authorization: str | None = conn.headers.get("Authorization")
+        token: str | None = None
+        if authorization:
+            try:
+                scheme, token = authorization.split(" ")
 
-        if not authorization:
-            return False, None
+                if scheme.lower() != "bearer":
+                    token = None
 
-        try:
-            scheme, token = authorization.split(" ")
+            except ValueError:
+                token = None
 
-            if scheme.lower() != "bearer":
-                return False, None
-
-        except ValueError:
-            return False, None
+        if not token and isinstance(conn, Request):
+            tokens = CookieManager.get_token(conn)
+            token = tokens.get("access_token")
 
         if not token:
             return False, None
