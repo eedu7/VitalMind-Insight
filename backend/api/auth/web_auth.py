@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Response, status
+from fastapi.responses import JSONResponse
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -31,6 +32,8 @@ async def webstie_register(
 
     AuthCookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
 
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={"message": "Successfully registerd."})
+
 
 @router.post(
     "/login",
@@ -45,10 +48,12 @@ async def web_login(
 ):
     token = await auth_service.login(email=data.email, password=data.password, session=session)
     AuthCookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Successfully logged in."})
 
 
-@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(RateLimiter(times=2, minutes=1))])
+@router.post("/logout", status_code=status.HTTP_200_OK, dependencies=[Depends(RateLimiter(times=2, minutes=1))])
 async def web_logout(
     response: Response,
 ):
     AuthCookieManager.delete_token(response=response)
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Successfully logged out."})
