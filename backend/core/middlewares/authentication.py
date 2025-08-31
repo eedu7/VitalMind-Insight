@@ -8,6 +8,9 @@ from core.security import AuthCookieKey, jwt_handler
 from schemas.user import CurrentUser
 
 
+# WARNING: If people are passing the token in headers and cookies, if the headers one is expired, or revoked,
+# and the cookie one if valid, the authentication fails, as it does not check, if the token is presented
+# in the headers
 class AuthBackend(AuthenticationBackend):
     async def authenticate(self, conn: HTTPConnection) -> Tuple[bool, CurrentUser | None]:  # type: ignore
         current_user = CurrentUser(uuid=None)
