@@ -1,9 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { registerFormSchema, RegisterFormValues } from "@/features/auth";
+import { registerFormSchema, RegisterFormValues, useAuth } from "@/features/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MailIcon, User } from "lucide-react";
+import { Loader2, MailIcon, User } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import IconInput from "../../_components/ui/IconInput";
@@ -19,8 +19,10 @@ export const RegisterForm = () => {
 		},
 	});
 
+	const { register } = useAuth();
+
 	const onSubmit = async (values: RegisterFormValues) => {
-		console.table(values);
+		register.mutateAsync(values);
 	};
 	return (
 		<Form {...form}>
@@ -65,7 +67,9 @@ export const RegisterForm = () => {
 					)}
 				/>
 
-				<Button className="w-full">Register</Button>
+				<Button className="w-full" disabled={register.isPending}>
+					{register.isPending ? <Loader2 className="repeat-infinite animate-spin" /> : <span>Register</span>}
+				</Button>
 				<div className="w-full text-end">
 					<Link href="/login" className="text-muted-foreground hover:text-primary text-sm">
 						Have an account? Login
