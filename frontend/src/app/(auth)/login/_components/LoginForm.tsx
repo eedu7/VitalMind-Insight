@@ -2,18 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MailIcon, User } from "lucide-react";
+import { MailIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import IconInput from "../../_components/ui/IconInput";
 import { PasswordInput } from "../../_components/ui/PasswordInput";
 
-const registerFormSchema = z.object({
-	username: z
-		.string()
-		.min(3, "Username must be at least 3 characters")
-		.max(20, "Username must be at most 20 characters"),
+const loginFormSchema = z.object({
 	email: z.string().email("Invalid email address"),
 	password: z
 		.string()
@@ -21,35 +17,21 @@ const registerFormSchema = z.object({
 		.max(100, "Password must be at most 100 characters"),
 });
 
-export const RegisterForm = () => {
-	const form = useForm<z.infer<typeof registerFormSchema>>({
-		resolver: zodResolver(registerFormSchema),
+export const LoginForm = () => {
+	const form = useForm<z.infer<typeof loginFormSchema>>({
+		resolver: zodResolver(loginFormSchema),
 		defaultValues: {
-			username: "",
 			password: "",
 			email: "",
 		},
 	});
 
-	const onSubmit = async (values: z.infer<typeof registerFormSchema>) => {
+	const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
 		console.table(values);
 	};
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-				<FormField
-					control={form.control}
-					name="username"
-					render={({ field }) => (
-						<FormItem>
-							<FormLabel>Username</FormLabel>
-							<FormControl>
-								<IconInput icon={User} {...field} placeholder="Enter your username" />
-							</FormControl>
-							<FormMessage />
-						</FormItem>
-					)}
-				/>
 				<FormField
 					control={form.control}
 					name="email"
@@ -78,9 +60,12 @@ export const RegisterForm = () => {
 				/>
 
 				<Button className="w-full">Register</Button>
-				<div className="w-full text-end">
-					<Link href="/login" className="text-muted-foreground hover:text-primary text-sm">
-						Have an account? Login
+				<div className="flex w-full items-center justify-between">
+					<Link href="#" className="text-muted-foreground hover:text-primary text-sm">
+						Forget password
+					</Link>
+					<Link href="/register" className="text-muted-foreground hover:text-primary text-sm">
+						New user? Register
 					</Link>
 				</div>
 			</form>

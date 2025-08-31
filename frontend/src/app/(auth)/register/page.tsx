@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function Page() {
 	return (
 		<FormCard
-			title="Create Your VitalMind Account"
-			description="Sign up to use our AI healthcare assistant for smart medical insights."
+			title="Join VitalMind Insight"
+			description="Create an account to explore AI-powered healthcare assistance, smart medical insights, and early disease detection tools."
 		>
 			<RegisterForm />
 		</FormCard>
