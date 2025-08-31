@@ -1,5 +1,6 @@
 "use client";
 
+import env from "@/lib/env";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { loginUser, registerUser } from "./api";
@@ -11,7 +12,7 @@ export function useAuth() {
 		mutationKey: ["newUser", "registerUser"],
 		mutationFn: registerUser,
 		onSuccess: () => {
-			router.push("/");
+			router.push(env.NEXT_PUBLIC_AFTER_SIGN_UP_URL);
 		},
 	});
 
@@ -19,7 +20,7 @@ export function useAuth() {
 		mutationKey: ["existingUser", "loginUser"],
 		mutationFn: loginUser,
 		onSuccess: () => {
-			router.push("/");
+			router.push(env.NEXT_PUBLIC_AFTER_SIGN_IN_URL);
 		},
 	});
 
