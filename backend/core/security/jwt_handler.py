@@ -7,7 +7,7 @@ from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
 from utils import get_timestamp
 
-TokenType = Literal["access", "refresh"]
+JWTTokenType = Literal["access", "refresh"]
 
 
 class JwtHandler:
@@ -21,10 +21,21 @@ class JwtHandler:
         self.algorithm = algorithm
         self.issuer = issuer
 
-    def encode(self, payload: Dict[str, Any], token_type: TokenType, expire_minutes: int = 1440) -> str:
+    def encode(
+        self,
+        payload: Dict[str, Any],
+        token_type: JWTTokenType,
+        expire_minutes: int = 1440,
+    ) -> str:
         expire_time = get_timestamp(minutes=expire_minutes)
         payload.update(
-            {"exp": expire_time, "type": token_type, "iss": self.issuer, "iat": get_timestamp(), "jti": str(uuid4())}
+            {
+                "exp": expire_time,
+                "type": token_type,
+                "iss": self.issuer,
+                "iat": get_timestamp(),
+                "jti": str(uuid4()),
+            }
         )
         return jwt.encode(  # type: ignore
             payload,
@@ -32,17 +43,29 @@ class JwtHandler:
             self.algorithm,
         )
 
-    def decode(self, token: str, expected_type: TokenType, verify_exp: bool = True) -> Dict[str, Any]:
+    def decode(
+        self, token: str, expected_type: JWTTokenType, verify_exp: bool = True
+    ) -> Dict[str, Any]:
         try:
             payload = jwt.decode(  # type: ignore
-                jwt=token, key=self.secret_key, algorithms=[self.algorithm], options={"verify_exp": verify_exp}
+                jwt=token,
+                key=self.secret_key,
+                algorithms=[self.algorithm],
+                options={"verify_exp": verify_exp},
             )
 
             if payload.get("type") != expected_type:
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token type")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Invalid token type",
+                )
 
             return payload
         except ExpiredSignatureError:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired token"
+            )
         except InvalidTokenError:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+            )
