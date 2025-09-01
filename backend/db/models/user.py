@@ -6,7 +6,7 @@ from db.mixins import PKUUIDMixin, TimeStampMixin
 
 
 class User(PKUUIDMixin, Base, TimeStampMixin):
-    __tablename__ = "users"
+    __tablename__: str = "users"
 
     username: Mapped[str] = mapped_column(Unicode(255), unique=True, nullable=False, index=True)
     email: Mapped[str] = mapped_column(Unicode(255), unique=True, nullable=False, index=True)
