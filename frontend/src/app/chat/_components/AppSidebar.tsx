@@ -6,11 +6,12 @@ import {
 	SidebarGroup,
 	SidebarGroupContent,
 	SidebarGroupLabel,
+	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Plus } from "lucide-react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,35 +25,21 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/features/auth";
-import { IconCreditCard, IconDotsVertical, IconLogout, IconNotification, IconUserCircle } from "@tabler/icons-react";
+import {
+	IconCreditCard,
+	IconDotsVertical,
+	IconEdit,
+	IconLogout,
+	IconSearch,
+	IconUserCircle,
+} from "@tabler/icons-react";
 
 export const AppSidebar = () => {
 	return (
-		<Sidebar>
+		<Sidebar collapsible="icon">
+			<Header />
 			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupLabel>Actions</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link prefetch={false} href="/new">
-										<Plus />
-										<span>New chat</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-							<SidebarMenuItem>
-								<SidebarMenuButton asChild>
-									<Link prefetch={false} href="/new">
-										<Plus />
-										<span>New chat</span>
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
+				<ActionGroup />
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser />
@@ -61,7 +48,57 @@ export const AppSidebar = () => {
 	);
 };
 
-export function NavUser() {
+const Header = () => {
+	return (
+		<SidebarHeader className="gap-0 p-0">
+			<SidebarGroup>
+				<SidebarGroupContent>
+					<SidebarMenu>
+						<SidebarMenuItem className="cursor-pointer">
+							<SidebarMenuButton asChild className="hover:bg-transparent">
+								<div className="flex w-full items-center justify-start gap-2">
+									<SidebarTrigger />
+									<Link href="/chat/new">VitalMind</Link>
+								</div>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					</SidebarMenu>
+				</SidebarGroupContent>
+			</SidebarGroup>
+		</SidebarHeader>
+	);
+};
+
+const ActionGroup = () => {
+	return (
+		<SidebarGroup>
+			<SidebarGroupLabel>Actions</SidebarGroupLabel>
+			<SidebarGroupContent>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton asChild>
+							<Link prefetch={false} href="/chat/new">
+								<IconEdit />
+								<span>New chat</span>
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton asChild>
+							{/* TODO: Add proper url */}
+							<Link prefetch={false} href="#">
+								<IconSearch />
+								<span>Search chat</span>
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarGroupContent>
+		</SidebarGroup>
+	);
+};
+
+const NavUser = () => {
 	const { logout } = useAuth();
 
 	return (
@@ -112,10 +149,6 @@ export function NavUser() {
 								<IconCreditCard />
 								Billing
 							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<IconNotification />
-								Notifications
-							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem onClick={async () => logout.mutateAsync()}>
@@ -127,4 +160,4 @@ export function NavUser() {
 			</SidebarMenuItem>
 		</SidebarMenu>
 	);
-}
+};

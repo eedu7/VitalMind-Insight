@@ -10,7 +10,7 @@ export default function Layout({ children }: LayoutProps) {
 	return (
 		<SidebarProvider>
 			<AppSidebar />
-			<main>{children}</main>
+			<main className="w-full">{children}</main>
 		</SidebarProvider>
 	);
 }
