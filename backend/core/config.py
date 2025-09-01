@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List, Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -6,6 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 ENV_FILE = BASE_DIR / ".env"
+
+TYPE_COOKIE_SAMESITE = Literal["strict", "lax", "none"]
 
 
 class Settings(BaseSettings):
@@ -19,6 +22,14 @@ class Settings(BaseSettings):
     # Redis
     REDIS_HOST: str
     REDIS_PORT: int
+
+    # Cookie
+    COOKIE_SECURE: bool = True
+    COOKIE_HTTPONLY: bool = True
+    COOKIE_SAMESITE: TYPE_COOKIE_SAMESITE = "lax"
+
+    # CORS
+    ALLOWED_ORIGINS: str = "http://localhost:8080"
 
     # App
     PORT: int = 8080
@@ -41,6 +52,10 @@ class Settings(BaseSettings):
     @property
     def REDIS_URL(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+
+    @property
+    def GET_ALLOWED_ORIGINS(self) -> List[str]:
+        return self.ALLOWED_ORIGINS.split(",")
 
 
 settings = Settings()  # type: ignore
