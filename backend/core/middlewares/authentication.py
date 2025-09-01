@@ -14,13 +14,12 @@ from schemas.user import CurrentUser
 # and the cookie one if valid, the authentication fails, as it does not check, if the token is presented
 # in the headers
 class AuthBackend(AuthenticationBackend):
-    async def authenticate(
-        self, conn: HTTPConnection
-    ) -> Tuple[bool, CurrentUser | None]:  # type: ignore
+    async def authenticate(self, conn: HTTPConnection) -> Tuple[bool, CurrentUser | None]:  # type: ignore
         current_user = CurrentUser(uuid=None)
 
         authorization: str | None = conn.headers.get("Authorization")
         token: str | None = None
+
         if authorization:
             try:
                 scheme, token = authorization.split(" ")
