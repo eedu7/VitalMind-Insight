@@ -20,10 +20,7 @@ export function useAuth() {
 		mutationKey: ["existingUser", "loginUser"],
 		mutationFn: loginUser,
 		onSuccess: () => {
-			// router.push(env.NEXT_PUBLIC_AFTER_SIGN_IN_URL);
-		},
-		onError: (err) => {
-			alert(err);
+			router.push(env.NEXT_PUBLIC_AFTER_SIGN_IN_URL);
 		},
 	});
 

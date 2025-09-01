@@ -9,13 +9,8 @@ export async function registerUser(data: RegisterFormValues): Promise<AuthRespon
 }
 
 export async function loginUser(data: LoginFormValues): Promise<AuthResponse> {
-	try {
-		const res = await apiClient.post<AuthResponse>(`${AUTH_URL}/login`, data);
-		return res.data;
-	} catch (err: any) {
-		console.log(err);
-		throw new Error(err);
-	}
+	const res = await apiClient.post<AuthResponse>(`${AUTH_URL}/login`, data);
+	return res.data;
 }
 
 export async function logoutUser(): Promise<AuthResponse> {

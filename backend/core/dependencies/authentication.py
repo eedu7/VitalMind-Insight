@@ -13,7 +13,9 @@ class AuthenticationRequired:
         self.token_blacklist = token_blacklist
 
     async def __call__(
-        self, request: Request, token: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))
+        self,
+        request: Request,
+        token: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False)),
     ):
         access_token: str | None = token.credentials if token else None
 
@@ -22,7 +24,10 @@ class AuthenticationRequired:
             access_token = cookies.get("access_token")
 
         if not access_token:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Authentication required",
+            )
 
         payload = self.jwt_handler.decode(access_token, expected_type="access")
 

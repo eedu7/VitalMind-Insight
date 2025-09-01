@@ -13,32 +13,38 @@ class AuthCookieKey(StrEnum):
 
 class AuthCookieManager:
     @classmethod
-    def set_tokens(cls, response: Response, access_token: str, refresh_token: str) -> None:
-        print("Setting up cookies")
+    def set_tokens(
+        cls, response: Response, access_token: str, refresh_token: str
+    ) -> None:
         response.set_cookie(
             key=AuthCookieKey.ACCESS,
             value=access_token,
             httponly=False,
             secure=False,
             samesite="lax",
+            expires=60 * 60 * 60 * 7,
             max_age=settings.JWT_ACCESS_EXPIRE_MINUTES * 60,
             path="/",
         )
-
         response.set_cookie(
             key=AuthCookieKey.REFRESH,
             value=refresh_token,
             httponly=False,
             secure=False,
             samesite="lax",
+            expires=60 * 60 * 60 * 7,
             max_age=settings.JWT_REFRESH_EXPIRE_MINUTES * 60,
             path="/",
         )
 
     @classmethod
     def delete_token(cls, response: Response) -> None:
-        response.delete_cookie(key=AuthCookieKey.ACCESS, httponly=True, secure=True, samesite="strict")
-        response.delete_cookie(key=AuthCookieKey.REFRESH, httponly=True, secure=True, samesite="strict")
+        response.delete_cookie(
+            key=AuthCookieKey.ACCESS, httponly=False, secure=False, samesite="lax"
+        )
+        response.delete_cookie(
+            key=AuthCookieKey.REFRESH, httponly=False, secure=False, samesite="lax"
+        )
 
     @classmethod
     def get_token(cls, request: Request) -> Dict[str, str | None]:

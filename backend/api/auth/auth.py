@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, status
-from fastapi.responses import JSONResponse
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.dependencies import services
 from db.session import get_session
-from schemas.auth import AuthLogin, AuthLogOut, AuthOut, AuthRegister
+from schemas.auth import AuthLogin, AuthOut, AuthRegister
 from services import AuthService
 
 router = APIRouter()
@@ -41,13 +40,6 @@ async def login(
     auth_service: AuthService = Depends(services.get_auth_service),
     session: AsyncSession = Depends(get_session),
 ):
-    return await auth_service.login(email=data.email, password=data.password, session=session)
-
-
-@router.post("/logout", status_code=status.HTTP_200_OK, dependencies=[Depends(RateLimiter(times=2, minutes=1))])
-async def logout(
-    data: AuthLogOut,
-    auth_service: AuthService = Depends(services.get_auth_service),
-):
-    await auth_service.logout(access_token=data.access_token, refresh_token=data.refresh_token)
-    return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Successfully logged out."})
+    return await auth_service.login(
+        email=data.email, password=data.password, session=session
+    )

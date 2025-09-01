@@ -16,7 +16,6 @@ def init_server(app_: FastAPI) -> None:
 
 def make_middleware() -> List[Middleware]:
     return [
-        Middleware(AuthenticationMiddleware, backend=AuthBackend()),
         Middleware(
             CORSMiddleware,
             allow_origins=["http://localhost:3000"],
@@ -24,12 +23,16 @@ def make_middleware() -> List[Middleware]:
             allow_methods=["*"],
             allow_headers=["*"],
         ),
+        Middleware(AuthenticationMiddleware, backend=AuthBackend()),
     ]
 
 
 def server() -> FastAPI:
     app_ = FastAPI(
-        title="VitalMind Insight", description="VitalMind Description", lifespan=lifespan, middleware=make_middleware()
+        title="VitalMind Insight",
+        description="VitalMind Description",
+        lifespan=lifespan,
+        middleware=make_middleware(),
     )
 
     init_server(app_)
