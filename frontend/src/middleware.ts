@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PUBLIC_ROUTES = ["/", "/login", "/register"];
+const PUBLIC_ROUTES = ["/login", "/register"];
 const EXCLUDED_PATHS = ["/_next", "/favicon.ico"];
 
 const isPublicRoute = (pathname: string) => PUBLIC_ROUTES.some((route) => pathname.startsWith(route));
@@ -15,12 +15,11 @@ export async function middleware(req: NextRequest) {
 		return NextResponse.next();
 	}
 	const token = req.cookies.get("access_token")?.value;
-
 	if (token) {
 		return NextResponse.next();
 	}
 
-	if (isPublicRoute(pathname)) {
+	if (isPublicRoute(pathname) || pathname === "/") {
 		return NextResponse.next();
 	}
 

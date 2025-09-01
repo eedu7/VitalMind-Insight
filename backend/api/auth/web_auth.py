@@ -3,8 +3,9 @@ from fastapi.responses import JSONResponse
 from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.config import settings
 from core.dependencies import services
-from core.security import AuthCookieManager
+from core.security import AuthCookieKey, AuthCookieManager
 from db.session import get_session
 from schemas.auth import AuthLogin, AuthRegister
 from services import AuthService
@@ -47,7 +48,24 @@ async def web_login(
     session: AsyncSession = Depends(get_session),
 ):
     token = await auth_service.login(email=data.email, password=data.password, session=session)
-    AuthCookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
+    # AuthCookieManager.set_tokens(response=response, access_token=token.access_token, refresh_token=token.refresh_token)
+    response.set_cookie(
+        key=AuthCookieKey.ACCESS,
+        value=token.access_token,
+        httponly=False,
+        secure=False,
+        samesite="lax",
+        max_age=settings.JWT_ACCESS_EXPIRE_MINUTES * 60 * 60,
+    )
+
+    response.set_cookie(
+        key=AuthCookieKey.REFRESH,
+        value=token.refresh_token,
+        httponly=False,
+        secure=False,
+        samesite="lax",
+        max_age=settings.JWT_REFRESH_EXPIRE_MINUTES * 60 * 60,
+    )
     return JSONResponse(status_code=status.HTTP_200_OK, content={"message": "Successfully logged in."})
 
 

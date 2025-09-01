@@ -9,8 +9,13 @@ export async function registerUser(data: RegisterFormValues): Promise<AuthRespon
 }
 
 export async function loginUser(data: LoginFormValues): Promise<AuthResponse> {
-	const res = await apiClient.post<AuthResponse>(`${AUTH_URL}/login`, data);
-	return res.data;
+	try {
+		const res = await apiClient.post<AuthResponse>(`${AUTH_URL}/login`, data);
+		return res.data;
+	} catch (err: any) {
+		console.log(err);
+		throw new Error(err);
+	}
 }
 
 export async function logoutUser(): Promise<AuthResponse> {

@@ -14,22 +14,25 @@ class AuthCookieKey(StrEnum):
 class AuthCookieManager:
     @classmethod
     def set_tokens(cls, response: Response, access_token: str, refresh_token: str) -> None:
+        print("Setting up cookies")
         response.set_cookie(
             key=AuthCookieKey.ACCESS,
             value=access_token,
-            httponly=True,
-            secure=True,
-            samesite="strict",
-            max_age=settings.JWT_ACCESS_EXPIRE_MINUTES,
+            httponly=False,
+            secure=False,
+            samesite="lax",
+            max_age=settings.JWT_ACCESS_EXPIRE_MINUTES * 60,
+            path="/",
         )
 
         response.set_cookie(
             key=AuthCookieKey.REFRESH,
             value=refresh_token,
-            httponly=True,
-            secure=True,
-            samesite="strict",
-            max_age=settings.JWT_REFRESH_EXPIRE_MINUTES,
+            httponly=False,
+            secure=False,
+            samesite="lax",
+            max_age=settings.JWT_REFRESH_EXPIRE_MINUTES * 60,
+            path="/",
         )
 
     @classmethod
