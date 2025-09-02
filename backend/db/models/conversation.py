@@ -1,8 +1,6 @@
 from typing import TYPE_CHECKING, List
-from uuid import UUID
 
-from sqlalchemy import UUID as PG_UUID
-from sqlalchemy import ForeignKey, Unicode
+from sqlalchemy import ForeignKey, Integer, Unicode
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db import Base
@@ -14,12 +12,12 @@ if TYPE_CHECKING:
     from .message import Message
 
 
-class Conversation(Base, TimeStampMixin, PKUUIDMixin):
+class Conversation(PKUUIDMixin, Base, TimeStampMixin):
     __tablename__: str = "conversations"
 
-    user_id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     title: Mapped[str] = mapped_column(Unicode(255), nullable=False, index=True)
 
     messages: Mapped[List["Message"]] = relationship(
-        "Message", back_populates="conversation", cascade="all, delete-orphans", lazy="selectin"
+        "Message", back_populates="conversation", cascade="all, delete-orphan", lazy="selectin"
     )

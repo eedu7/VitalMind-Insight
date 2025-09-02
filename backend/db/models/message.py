@@ -1,9 +1,7 @@
 from enum import StrEnum
 from typing import TYPE_CHECKING
-from uuid import UUID
 
-from sqlalchemy import UUID as PG_UUID
-from sqlalchemy import Enum, ForeignKey, Text
+from sqlalchemy import Enum, ForeignKey, Integer, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db import Base
@@ -22,12 +20,10 @@ class Role(StrEnum):
     TOOL = "tool"
 
 
-class Message(Base, PKUUIDMixin, TimeStampMixin):
+class Message(PKUUIDMixin, Base, TimeStampMixin):
     __tablename__: str = "messages"
 
-    conversation_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True), ForeignKey("conversations.id", ondelete="CASCADE")
-    )
+    conversation_id: Mapped[int] = mapped_column(Integer, ForeignKey("conversations.id", ondelete="CASCADE"))
     role: Mapped[Role] = mapped_column(Enum(Role), default=Role.USER)
     content: Mapped[str] = mapped_column(Text, nullable=False)
 
