@@ -21,6 +21,14 @@ class ConversationService:
             session=session,
         )
 
+    async def get_conversation_by_uuid(self, uuid: UUID, session: AsyncSession) -> Conversation:
+        conversation: Conversation | None = await self.crud.get_by_uuid(uuid, session)
+
+        if not conversation:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No conversation found")
+
+        return conversation
+
     async def create_conversation(self, title: str, user_id: int, session: AsyncSession) -> Conversation:
         try:
             conversation: Conversation = Conversation(user_id=user_id, title=title)

@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -19,6 +20,15 @@ async def get_all_conversations(
     session: AsyncSession = Depends(get_session),
 ):
     return await conversation_service.get_all_conversations(current_user.id, session)
+
+
+@router.get("/{conversation_uuid}", status_code=status.HTTP_200_OK, response_model=ConversationOut)
+async def get_conversation_by_uuid(
+    conversation_uuid: UUID,
+    conversation_service: ConversationService = Depends(services.get_conversation_service),
+    session: AsyncSession = Depends(get_session),
+):
+    return await conversation_service.get_conversation_by_uuid(conversation_uuid, session)
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=ConversationOut)
