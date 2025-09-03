@@ -15,9 +15,7 @@ class ConversationService:
 
     async def get_all_conversations(self, user_id: int, session: AsyncSession) -> Sequence[Conversation]:
         return await self.crud.get_all_by_filters(
-            filters={
-                "user_id": user_id,
-            },
+            filters={"user_id": user_id},
             session=session,
         )
 
