@@ -27,7 +27,16 @@ class ConversationService:
 
         if not conversation:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=f"No conversation found with the uuid f{uuid}"
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"No conversation found with the uuid {uuid}"
             )
 
         await self.crud.delete(conversation, session=session)
+
+    async def update_conversation(self, uuid: UUID, title: str, session: AsyncSession) -> None:
+        values = {"title": title}
+        updated = await self.crud.update_by_uuid(uuid, values, session)
+
+        if not updated:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"No conversation found with the uuid {uuid}"
+            )
