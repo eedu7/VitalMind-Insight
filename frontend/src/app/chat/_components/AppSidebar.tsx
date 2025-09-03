@@ -25,6 +25,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/features/auth";
+import { useConversations } from "@/features/conversations";
 import {
 	IconCreditCard,
 	IconDotsVertical,
@@ -33,13 +34,18 @@ import {
 	IconSearch,
 	IconUserCircle,
 } from "@tabler/icons-react";
+import { Loader2 } from "lucide-react";
 
 export const AppSidebar = () => {
 	return (
 		<Sidebar collapsible="icon">
-			<Header />
-			<SidebarContent>
+			<SidebarHeader className="gap-0 p-0">
+				<Header />
 				<ActionGroup />
+			</SidebarHeader>
+
+			<SidebarContent>
+				<ChatGroup />
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser />
@@ -50,22 +56,20 @@ export const AppSidebar = () => {
 
 const Header = () => {
 	return (
-		<SidebarHeader className="gap-0 p-0">
-			<SidebarGroup>
-				<SidebarGroupContent>
-					<SidebarMenu>
-						<SidebarMenuItem className="cursor-pointer">
-							<SidebarMenuButton asChild className="hover:bg-transparent">
-								<div className="flex w-full items-center justify-start gap-2">
-									<SidebarTrigger />
-									<Link href="/chat/new">VitalMind</Link>
-								</div>
-							</SidebarMenuButton>
-						</SidebarMenuItem>
-					</SidebarMenu>
-				</SidebarGroupContent>
-			</SidebarGroup>
-		</SidebarHeader>
+		<SidebarGroup>
+			<SidebarGroupContent>
+				<SidebarMenu>
+					<SidebarMenuItem className="cursor-pointer">
+						<SidebarMenuButton asChild className="hover:bg-transparent">
+							<div className="flex w-full items-center justify-start gap-2">
+								<SidebarTrigger />
+								<Link href="/chat/new">VitalMind</Link>
+							</div>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarGroupContent>
+		</SidebarGroup>
 	);
 };
 
@@ -92,6 +96,36 @@ const ActionGroup = () => {
 							</Link>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarGroupContent>
+		</SidebarGroup>
+	);
+};
+
+const ChatGroup = () => {
+	const { allConversationsQuery } = useConversations();
+
+	return (
+		<SidebarGroup>
+			<SidebarGroupLabel>Chats</SidebarGroupLabel>
+			<SidebarGroupContent>
+				<SidebarMenu>
+					{allConversationsQuery.isPending ? (
+						<div className="flex items-center justify-between p-2">
+							<span>Loading...</span>
+							<Loader2 className="repeat-infinite animate-spin" />
+						</div>
+					) : (
+						allConversationsQuery.data?.map((conversation) => (
+							<SidebarMenuItem key={conversation.uuid}>
+								<SidebarMenuButton asChild>
+									<Link prefetch={false} href={`/chat/${conversation.uuid}`}>
+										{conversation.title}
+									</Link>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+						))
+					)}
 				</SidebarMenu>
 			</SidebarGroupContent>
 		</SidebarGroup>
