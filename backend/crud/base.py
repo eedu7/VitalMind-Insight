@@ -1,4 +1,4 @@
-from typing import Any, Dict, Generic, Sequence, Type, TypeVar, Union
+from typing import Any, Dict, Generic, Sequence, Type, TypeVar
 from uuid import UUID
 
 from sqlalchemy import and_, select, update
@@ -29,18 +29,17 @@ class BaseCRUD(Generic[ModelType]):
         result = await session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_by_filters(
-        self, session: AsyncSession, unique: bool = False, **filters: Any
-    ) -> Union[Sequence[ModelType], ModelType, None]:
+    async def get_all_by_filters(self, session: AsyncSession, **filters: Any) -> Sequence[ModelType]:
         conditions = [getattr(self.model, field) == value for field, value in filters.items()]
-
         stmt = select(self.model).where(and_(*conditions))  # type: ignore
         result = await session.execute(stmt)
+        return result.scalars().all()
 
-        if unique:
-            return result.scalar_one_or_none()
-        else:
-            return result.scalars().all()
+    async def get_one_by_filters(self, session: AsyncSession, **filters: Any) -> ModelType | None:
+        conditions = [getattr(self.model, field) == value for field, value in filters.items()]
+        stmt = select(self.model).where(and_(*conditions))  # type: ignore
+        result = await session.execute(stmt)
+        return result.scalar_one_or_none()
 
     async def create(self, obj: ModelType, session: AsyncSession) -> ModelType:
         session.add(obj)
