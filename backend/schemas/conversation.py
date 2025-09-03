@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from uuid import UUID
 
@@ -36,5 +37,6 @@ class ConversationOut(ConversationCreate):
         ...,
         description="List of messages exchanged in the conversation",
     )
+    created_at: datetime = Field(..., description="Conversation created at the date and time.")
 
     model_config = ConfigDict(from_attributes=True)
