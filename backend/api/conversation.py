@@ -1,20 +1,16 @@
 from fastapi import APIRouter, Depends, status
-from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.dependencies import AuthenticationRequired, get_current_active_user, services
 from db import get_session
 from db.models import User
+from schemas.conversation import ConversationCreate, ConversationOut
 from services import ConversationService
 
 router = APIRouter(dependencies=[Depends(AuthenticationRequired)])
 
 
-class ConversationCreate(BaseModel):
-    title: str
-
-
-@router.post("/", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ConversationOut)
 async def create_conversation(
     data: ConversationCreate,
     current_user: User = Depends(get_current_active_user),
