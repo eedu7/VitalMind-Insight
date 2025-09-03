@@ -1,3 +1,4 @@
+from typing import Sequence
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -11,6 +12,14 @@ from db.models import Conversation
 class ConversationService:
     def __init__(self, crud: ConversationCRUD) -> None:
         self.crud = crud
+
+    async def get_all_conversations(self, user_id: int, session: AsyncSession) -> Sequence[Conversation]:
+        return await self.crud.get_all_by_filters(
+            filters={
+                "user_id": user_id,
+            },
+            session=session,
+        )
 
     async def create_conversation(self, title: str, user_id: int, session: AsyncSession) -> Conversation:
         try:
