@@ -8,7 +8,7 @@ export type CreateConversation = {
 	title: string;
 };
 
-export type UpdateConversation = CreateConversation & {};
+export type UpdateConversation = CreateConversation;
 
 export type DeleteConversation = {
 	chatId: string;
