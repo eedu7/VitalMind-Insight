@@ -1,3 +1,6 @@
+from uuid import UUID
+
+from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,3 +21,13 @@ class ConversationService:
             return conversation
         except SQLAlchemyError as e:
             raise ValueError("Database error: {e}") from e
+
+    async def delete_conversation(self, uuid: UUID, session: AsyncSession) -> None:
+        conversation = await self.crud.get_by_uuid(uuid, session)
+
+        if not conversation:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"No conversation found with the uuid f{uuid}"
+            )
+
+        await self.crud.delete(conversation, session=session)
