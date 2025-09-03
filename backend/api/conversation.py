@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.dependencies import AuthenticationRequired, get_current_active_user, services
 from db import get_session
 from db.models import User
-from schemas.conversation import ConversationCreate, ConversationDelete, ConversationOut, ConversationUpdate
+from schemas.conversation import ConversationCreate, ConversationOut, ConversationUpdate
 from services import ConversationService
 
 router = APIRouter(dependencies=[Depends(AuthenticationRequired)])
@@ -51,12 +51,12 @@ async def update_conversation(
     return {"message": "Conversation updated."}
 
 
-@router.delete("/", status_code=status.HTTP_200_OK)
+@router.delete("/{conversation_uuid}", status_code=status.HTTP_200_OK)
 async def delete_conversation(
-    data: ConversationDelete,
+    conversation_uuid: UUID,
     conversation_service: ConversationService = Depends(services.get_conversation_service),
     session: AsyncSession = Depends(get_session),
 ):
-    await conversation_service.delete_conversation(data.conversation_uuid, session)
+    await conversation_service.delete_conversation(conversation_uuid, session)
 
     return {"message": "Conversation deleted."}
