@@ -25,8 +25,8 @@ class BaseCRUD(Generic[ModelType]):
         if not column:
             raise ValueError(f"{field} is not a valid column of {self.model.__name__}")
 
-        query = select(self.model).where(column == value)
-        result = await session.execute(query)
+        stmt = select(self.model).where(column == value)
+        result = await session.execute(stmt)
         return result.scalar_one_or_none()
 
     async def get_by_filters(
@@ -49,10 +49,22 @@ class BaseCRUD(Generic[ModelType]):
         return obj
 
     async def update(self, _id: int, values: Dict[str, Any], session: AsyncSession) -> None:
-        query = update(self.model).where(self.model.id == _id).values(**values)  # type: ignore
-        await session.execute(query)
+        stmt = update(self.model).where(self.model.id == _id).values(**values)  # type: ignore
+        await session.execute(stmt)
         await session.commit()
 
     async def delete(self, obj: ModelType, session: AsyncSession) -> None:
         await session.delete(obj)
         await session.commit()
+
+    async def update_by_uuid(self, uuid: UUID, values: Dict[str, Any], session: AsyncSession) -> bool:
+        stmt = (
+            update(self.model)
+            .where(self.model.uuid == uuid)  # type: ignore
+            .values(**values)
+            .execution_options(synchronize_session="fetch")
+        )
+
+        result = await session.execute(stmt)
+        await session.commit()
+        return bool(result.rowcount)  # return True if updated, else False
