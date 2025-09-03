@@ -41,13 +41,14 @@ async def create_conversation(
     return await conversation_service.create_conversation(data.title, current_user.id, session)
 
 
-@router.put("/", status_code=status.HTTP_200_OK)
+@router.put("/{conversation_uuid}", status_code=status.HTTP_200_OK)
 async def update_conversation(
+    conversation_uuid: UUID,
     data: ConversationUpdate,
     conversation_service: ConversationService = Depends(services.get_conversation_service),
     session: AsyncSession = Depends(get_session),
 ):
-    await conversation_service.update_conversation(data.conversation_uuid, data.title, session)
+    await conversation_service.update_conversation(conversation_uuid, data.title, session)
     return {"message": "Conversation updated."}
 
 

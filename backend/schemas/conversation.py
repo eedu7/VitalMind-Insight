@@ -22,7 +22,7 @@ class ConversationDelete(BaseModel):
     )
 
 
-class ConversationUpdate(ConversationCreate, ConversationDelete):
+class ConversationUpdate(ConversationCreate):
     pass
 
 
