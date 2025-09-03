@@ -4,14 +4,12 @@ import { getAllConversation } from "./api";
 export function useConversations() {
 	const queryClient = useQueryClient();
 
-	const getAll = useQuery({
+	const allConversationsQuery = useQuery({
 		queryKey: ["getAllConversations"],
 		queryFn: getAllConversation,
 	});
 
 	return {
-		queries: {
-			getAll,
-		},
+		allConversationsQuery,
 	};
 }
