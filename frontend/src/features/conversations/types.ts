@@ -1,7 +1,7 @@
 import { Message } from "../messages";
 
-export type GetChatByID = {
-	chatId: string;
+export type GetConversationByID = {
+	conversationId: string;
 };
 
 export type CreateConversation = {
@@ -11,7 +11,7 @@ export type CreateConversation = {
 export type UpdateConversation = CreateConversation;
 
 export type DeleteConversation = {
-	chatId: string;
+	conversationId: string;
 };
 
 export type Conversation = {
