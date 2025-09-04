@@ -1,6 +1,16 @@
 "use client";
-
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { useConversationActions } from "@/features/conversations";
 
 export const ChatModals = () => {
@@ -21,7 +31,7 @@ export const ChatModals = () => {
 			return <ShareModal chatId={targetId} chatTitle={title} closeModal={closeModal} isOpen={isOpen} />;
 
 		default:
-			break;
+			return null;
 	}
 };
 
@@ -32,7 +42,7 @@ interface ModalProps {
 	closeModal: () => void;
 }
 
-const RenameModal = ({ chatId, chatTitle, isOpen, closeModal }: ModalProps) => {
+const RenameModal = ({ isOpen, closeModal }: ModalProps) => {
 	return (
 		<Dialog open={isOpen} onOpenChange={closeModal}>
 			<DialogContent>
@@ -43,34 +53,33 @@ const RenameModal = ({ chatId, chatTitle, isOpen, closeModal }: ModalProps) => {
 						from our servers.
 					</DialogDescription>
 				</DialogHeader>
-				<h1 className="text-xl font-bold hover:transform-3d">Rename</h1>
-
-				<div>ChatId: {chatId}</div>
-				<div>ChatId: {chatTitle}</div>
 			</DialogContent>
 		</Dialog>
 	);
 };
 
-const DeleteConfirmationModal = ({ chatId, chatTitle, isOpen, closeModal }: ModalProps) => {
+const DeleteConfirmationModal = ({ isOpen, closeModal }: ModalProps) => {
 	return (
-		<Dialog open={isOpen} onOpenChange={closeModal}>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Are you absolutely sure?</DialogTitle>
-					<DialogDescription>
+		<AlertDialog open={isOpen} onOpenChange={closeModal}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogDescription>
 						This action cannot be undone. This will permanently delete your account and remove your data
 						from our servers.
-					</DialogDescription>
-				</DialogHeader>
-				<div>ChatId: {chatId}</div>
-				<div>ChatId: {chatTitle}</div>
-			</DialogContent>
-		</Dialog>
+					</AlertDialogDescription>
+				</AlertDialogHeader>
+
+				<AlertDialogFooter>
+					<AlertDialogCancel>Cancel</AlertDialogCancel>
+					<AlertDialogAction>Continue</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	);
 };
 
-const ShareModal = ({ chatId, chatTitle, isOpen, closeModal }: ModalProps) => {
+const ShareModal = ({ isOpen, closeModal }: ModalProps) => {
 	return (
 		<Dialog open={isOpen} onOpenChange={closeModal}>
 			<DialogContent>
@@ -81,9 +90,6 @@ const ShareModal = ({ chatId, chatTitle, isOpen, closeModal }: ModalProps) => {
 						from our servers.
 					</DialogDescription>
 				</DialogHeader>
-				<h1 className="text-xl font-bold hover:transform-3d">Share</h1>
-				<div>ChatId: {chatId}</div>
-				<div>ChatId: {chatTitle}</div>
 			</DialogContent>
 		</Dialog>
 	);
