@@ -9,9 +9,13 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import { useConversationActions, useConversations } from "@/features/conversations";
+import { useState } from "react";
 
 export const ChatModals = () => {
 	const { action, targetId, title, isOpen, closeModal } = useConversationActions();
@@ -42,17 +46,39 @@ interface ModalProps {
 	closeModal: () => void;
 }
 
-const RenameModal = ({ isOpen, closeModal }: ModalProps) => {
+const RenameModal = ({ isOpen, closeModal, chatTitle, chatId }: ModalProps) => {
+	const [value, setValue] = useState(chatTitle);
+
+	const { updateConversation } = useConversations();
+
+	const onSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		updateConversation.mutateAsync({
+			title: value,
+			uuid: chatId,
+		});
+		closeModal();
+	};
+
 	return (
 		<Dialog open={isOpen} onOpenChange={closeModal}>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Are you absolutely sure?</DialogTitle>
-					<DialogDescription>
-						This action cannot be undone. This will permanently delete your account and remove your data
-						from our servers.
-					</DialogDescription>
+					<DialogTitle>Edit chat title</DialogTitle>
 				</DialogHeader>
+				<form onSubmit={onSubmit} className="space-y-4">
+					<div className="space-y-2">
+						<Label>Chat Title</Label>
+						<Input placeholder="Edit title" value={value} onChange={(e) => setValue(e.target.value)} />
+					</div>
+					<div className="flex w-full justify-end gap-x-2">
+						<Button type="button" variant="outline" onClick={closeModal}>
+							Cancel
+						</Button>
+						<Button>Update</Button>
+					</div>
+				</form>
 			</DialogContent>
 		</Dialog>
 	);
