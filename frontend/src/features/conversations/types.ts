@@ -5,3 +5,5 @@ export type Conversation = {
 	title: string;
 	messages?: Message[];
 };
+
+export type DeleteConversation = Pick<Conversation, "uuid">;
