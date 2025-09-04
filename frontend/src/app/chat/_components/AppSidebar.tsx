@@ -11,6 +11,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarTrigger,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
@@ -24,6 +25,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useAuth } from "@/features/auth";
 import { useConversations } from "@/features/conversations";
 import {
@@ -40,21 +42,21 @@ export const AppSidebar = () => {
 	return (
 		<Sidebar collapsible="icon">
 			<SidebarHeader className="gap-0 p-0">
-				<Header />
-				<ActionGroup />
+				<SidebarHeaderSection />
 			</SidebarHeader>
 
-			<SidebarContent>
-				<ChatGroup />
+			<SidebarContent className="flex flex-col gap-6 overflow-hidden">
+				<ChatActionGroup />
+				<ChatSidebarGroup />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser />
+				<UserAccountGroup />
 			</SidebarFooter>
 		</Sidebar>
 	);
 };
 
-const Header = () => {
+const SidebarHeaderSection = () => {
 	return (
 		<SidebarGroup>
 			<SidebarGroupContent>
@@ -73,7 +75,7 @@ const Header = () => {
 	);
 };
 
-const ActionGroup = () => {
+const ChatActionGroup = () => {
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>Actions</SidebarGroupLabel>
@@ -102,37 +104,56 @@ const ActionGroup = () => {
 	);
 };
 
-const ChatGroup = () => {
-	const { allConversationsQuery } = useConversations();
-
+const ChatSidebarGroup = () => {
 	return (
-		<SidebarGroup>
+		<SidebarGroup className="flex-1 overflow-hidden">
 			<SidebarGroupLabel>Chats</SidebarGroupLabel>
-			<SidebarGroupContent>
-				<SidebarMenu>
-					{allConversationsQuery.isPending ? (
-						<div className="flex items-center justify-between p-2">
-							<span>Loading...</span>
-							<Loader2 className="repeat-infinite animate-spin" />
-						</div>
-					) : (
-						allConversationsQuery.data?.map((conversation) => (
-							<SidebarMenuItem key={conversation.uuid}>
-								<SidebarMenuButton asChild>
-									<Link prefetch={false} href={`/chat/${conversation.uuid}`}>
-										{conversation.title}
-									</Link>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-						))
-					)}
-				</SidebarMenu>
+			<SidebarGroupContent className="h-full">
+				<ScrollArea className="h-full">
+					<SidebarMenu>
+						<ChatListContent />
+					</SidebarMenu>
+					<ScrollBar orientation="vertical" />
+				</ScrollArea>
 			</SidebarGroupContent>
 		</SidebarGroup>
 	);
 };
 
-const NavUser = () => {
+const ChatListContent = () => {
+	const { allConversationsQuery } = useConversations();
+	const { state } = useSidebar();
+
+	if (state === "collapsed") return null;
+
+	if (allConversationsQuery.isPending) {
+		return (
+			<div className="flex items-center justify-between p-2">
+				<span>Loading...</span>
+				<Loader2 className="animate-spin" />
+			</div>
+		);
+	}
+	if (allConversationsQuery.isError) {
+		return <div className="p-2 text-red-500">Failed to load chats</div>;
+	}
+
+	if (!allConversationsQuery.data?.length) {
+		return <div className="text-muted-foreground p-2">No chats yet</div>;
+	}
+
+	return allConversationsQuery.data?.map((conversation) => (
+		<SidebarMenuItem key={conversation.uuid}>
+			<SidebarMenuButton asChild>
+				<Link prefetch={false} href={`/chat/${conversation.uuid}`}>
+					{conversation.title}
+				</Link>
+			</SidebarMenuButton>
+		</SidebarMenuItem>
+	));
+};
+
+const UserAccountGroup = () => {
 	const { logout } = useAuth();
 
 	return (
