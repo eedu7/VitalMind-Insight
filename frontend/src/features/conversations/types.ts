@@ -7,5 +7,6 @@ export type Conversation = {
 	messages?: Message[];
 };
 
+export type GetConversationById = Pick<Conversation, "uuid">;
 export type UpdateConversation = Omit<Conversation, "messages">;
 export type DeleteConversation = Pick<Conversation, "uuid">;
