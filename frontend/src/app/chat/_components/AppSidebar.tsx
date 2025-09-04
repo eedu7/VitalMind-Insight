@@ -8,6 +8,7 @@ import {
 	SidebarGroupLabel,
 	SidebarHeader,
 	SidebarMenu,
+	SidebarMenuAction,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarTrigger,
@@ -33,10 +34,14 @@ import {
 	IconDotsVertical,
 	IconEdit,
 	IconLogout,
+	IconPencil,
 	IconSearch,
+	IconShare,
+	IconTrash,
 	IconUserCircle,
 } from "@tabler/icons-react";
-import { Loader2 } from "lucide-react";
+import { Loader2, MoreHorizontal } from "lucide-react";
+import React from "react";
 
 export const AppSidebar = () => {
 	return (
@@ -108,14 +113,14 @@ const ChatSidebarGroup = () => {
 	return (
 		<SidebarGroup className="flex-1 overflow-hidden">
 			<SidebarGroupLabel>Chats</SidebarGroupLabel>
-			<SidebarGroupContent className="h-full">
-				<ScrollArea className="h-full">
-					<SidebarMenu>
+			<ScrollArea className="h-full">
+				<SidebarGroupContent className="h-full">
+					<SidebarMenu className="space-y-2">
 						<ChatListContent />
 					</SidebarMenu>
-					<ScrollBar orientation="vertical" />
-				</ScrollArea>
-			</SidebarGroupContent>
+				</SidebarGroupContent>
+				<ScrollBar orientation="vertical" />
+			</ScrollArea>
 		</SidebarGroup>
 	);
 };
@@ -143,14 +148,65 @@ const ChatListContent = () => {
 	}
 
 	return allConversationsQuery.data?.map((conversation) => (
-		<SidebarMenuItem key={conversation.uuid}>
+		<SidebarMenuItem key={conversation.uuid} className="group/item">
 			<SidebarMenuButton asChild>
 				<Link prefetch={false} href={`/chat/${conversation.uuid}`}>
 					{conversation.title}
 				</Link>
 			</SidebarMenuButton>
+			<ChatActionDropDown chatId={conversation.uuid} chatTitle={conversation.title} />
 		</SidebarMenuItem>
 	));
+};
+
+const ChatActionDropDown = ({ chatId, chatTitle }: { chatId: string; chatTitle: string }) => {
+	const handleAction = (e: React.MouseEvent<HTMLDivElement>) => {
+		const target = e.target as HTMLElement;
+
+		const actionBtn = target.closest<HTMLElement>("[data-action]");
+
+		const action = actionBtn?.dataset.action;
+
+		if (action === "edit") {
+			alert(`Edit: ${chatTitle} ${chatId}`);
+		}
+		if (action === "delete") {
+			alert(`Delete: ${chatTitle} ${chatId}`);
+		}
+		if (action === "share") {
+			alert(`Share: ${chatTitle} ${chatId}`);
+		}
+	};
+
+	return (
+		<div
+			className="opacity-100 transition-opacity duration-200 group-hover/item:opacity-100 md:opacity-0"
+			onClick={handleAction}
+		>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild className="mx-2 cursor-pointer">
+					<SidebarMenuAction>
+						<MoreHorizontal />
+					</SidebarMenuAction>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent side="right" align="start">
+					<DropdownMenuItem data-action="edit">
+						<IconPencil />
+						<span>Rename</span>
+					</DropdownMenuItem>
+					<DropdownMenuItem data-action="delete">
+						<IconTrash />
+						<span>Delete</span>
+					</DropdownMenuItem>
+					<DropdownMenuSeparator />
+					<DropdownMenuItem data-action="share">
+						<IconShare />
+						<span>Share</span>
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</div>
+	);
 };
 
 const UserAccountGroup = () => {
