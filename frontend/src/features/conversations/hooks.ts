@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteConversationApi, getAllConversationApi, updateConversationApi } from "./api";
+import { deleteConversationApi, getAllConversationApi, getConversationByIdApi, updateConversationApi } from "./api";
 
 export function useConversations() {
 	const queryClient = useQueryClient();
@@ -8,6 +8,15 @@ export function useConversations() {
 		queryKey: ["getAllConversations"],
 		queryFn: getAllConversationApi,
 	});
+
+	const getConversationById = (conversationId: string) => {
+		return useQuery({
+			queryKey: ["getConversationById", conversationId],
+			queryFn: async () => {
+				await getConversationByIdApi({ uuid: conversationId });
+			},
+		});
+	};
 
 	const updateConversation = useMutation({
 		mutationKey: ["updateConversation"],
@@ -27,6 +36,7 @@ export function useConversations() {
 
 	return {
 		allConversationsQuery,
+		getConversationById,
 		updateConversation,
 		deleteConversation,
 	};
