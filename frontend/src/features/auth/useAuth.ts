@@ -3,6 +3,7 @@
 import env from "@/lib/env";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { loginUser, logoutUser, registerUser } from "./api";
 
 export function useAuth() {
@@ -14,6 +15,9 @@ export function useAuth() {
 		onSuccess: () => {
 			router.push(env.NEXT_PUBLIC_AFTER_SIGN_UP_URL);
 		},
+		onError: (err) => {
+			toast.error(err.message);
+		},
 	});
 
 	const login = useMutation({
@@ -22,6 +26,9 @@ export function useAuth() {
 		onSuccess: () => {
 			router.push(env.NEXT_PUBLIC_AFTER_SIGN_IN_URL);
 		},
+		onError: (err) => {
+			toast.error(err.message);
+		},
 	});
 
 	const logout = useMutation({
@@ -29,6 +36,9 @@ export function useAuth() {
 		mutationFn: logoutUser,
 		onSuccess: () => {
 			router.push(env.NEXT_PUBLIC_AFTER_SIGN_OUT_URL);
+		},
+		onError: (err) => {
+			toast.error(err.message);
 		},
 	});
 

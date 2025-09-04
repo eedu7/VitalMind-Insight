@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import { TanstackQueryProvider } from "@/providers/TanstackQueryProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -26,6 +27,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
 				<TanstackQueryProvider>{children}</TanstackQueryProvider>
+				<Toaster />
 			</body>
 		</html>
 	);

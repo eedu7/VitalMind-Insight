@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { deleteConversationApi, getAllConversationApi, getConversationByIdApi, updateConversationApi } from "./api";
 
 export function useConversations() {
@@ -24,6 +25,9 @@ export function useConversations() {
 				queryKey: ["getAllConversations"],
 			});
 		},
+		onError: (err) => {
+			toast.error(err.message);
+		},
 	});
 
 	const deleteConversation = useMutation({
@@ -31,6 +35,9 @@ export function useConversations() {
 		mutationFn: deleteConversationApi,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["getAllConversations"] });
+		},
+		onError: (err) => {
+			toast.error(err.message);
 		},
 	});
 
