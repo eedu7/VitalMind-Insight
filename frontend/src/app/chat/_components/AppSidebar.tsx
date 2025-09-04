@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useAuth } from "@/features/auth";
-import { useConversations } from "@/features/conversations";
+import { useConversationActions, useConversations } from "@/features/conversations";
 import {
 	IconCreditCard,
 	IconDotsVertical,
@@ -41,7 +41,6 @@ import {
 	IconUserCircle,
 } from "@tabler/icons-react";
 import { Loader2, MoreHorizontal } from "lucide-react";
-import React from "react";
 
 export const AppSidebar = () => {
 	return (
@@ -160,29 +159,10 @@ const ChatListContent = () => {
 };
 
 const ChatActionDropDown = ({ chatId, chatTitle }: { chatId: string; chatTitle: string }) => {
-	const handleAction = (e: React.MouseEvent<HTMLDivElement>) => {
-		const target = e.target as HTMLElement;
-
-		const actionBtn = target.closest<HTMLElement>("[data-action]");
-
-		const action = actionBtn?.dataset.action;
-
-		if (action === "edit") {
-			alert(`Edit: ${chatTitle} ${chatId}`);
-		}
-		if (action === "delete") {
-			alert(`Delete: ${chatTitle} ${chatId}`);
-		}
-		if (action === "share") {
-			alert(`Share: ${chatTitle} ${chatId}`);
-		}
-	};
+	const setAction = useConversationActions((s) => s.setAction);
 
 	return (
-		<div
-			className="opacity-100 transition-opacity duration-200 group-hover/item:opacity-100 md:opacity-0"
-			onClick={handleAction}
-		>
+		<div className="opacity-100 transition-opacity duration-200 group-hover/item:opacity-100 md:opacity-0">
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild className="mx-2 cursor-pointer">
 					<SidebarMenuAction>
@@ -190,16 +170,16 @@ const ChatActionDropDown = ({ chatId, chatTitle }: { chatId: string; chatTitle: 
 					</SidebarMenuAction>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent side="right" align="start">
-					<DropdownMenuItem data-action="edit">
+					<DropdownMenuItem onClick={() => setAction(chatId, chatTitle, "rename")}>
 						<IconPencil />
 						<span>Rename</span>
 					</DropdownMenuItem>
-					<DropdownMenuItem data-action="delete">
+					<DropdownMenuItem onClick={() => setAction(chatId, chatTitle, "delete")}>
 						<IconTrash />
 						<span>Delete</span>
 					</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem data-action="share">
+					<DropdownMenuItem onClick={() => setAction(chatId, chatTitle, "share")}>
 						<IconShare />
 						<span>Share</span>
 					</DropdownMenuItem>
@@ -208,6 +188,7 @@ const ChatActionDropDown = ({ chatId, chatTitle }: { chatId: string; chatTitle: 
 		</div>
 	);
 };
+
 
 const UserAccountGroup = () => {
 	const { logout } = useAuth();
