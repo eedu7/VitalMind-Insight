@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-import { useConversationActions } from "@/features/conversations";
+import { useConversationActions, useConversations } from "@/features/conversations";
 
 export const ChatModals = () => {
 	const { action, targetId, title, isOpen, closeModal } = useConversationActions();
@@ -58,7 +58,9 @@ const RenameModal = ({ isOpen, closeModal }: ModalProps) => {
 	);
 };
 
-const DeleteConfirmationModal = ({ isOpen, closeModal }: ModalProps) => {
+const DeleteConfirmationModal = ({ chatId, isOpen, closeModal }: ModalProps) => {
+	const { deleteConversation } = useConversations();
+
 	return (
 		<AlertDialog open={isOpen} onOpenChange={closeModal}>
 			<AlertDialogContent>
@@ -72,7 +74,9 @@ const DeleteConfirmationModal = ({ isOpen, closeModal }: ModalProps) => {
 
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<AlertDialogAction>Continue</AlertDialogAction>
+					<AlertDialogAction onClick={() => deleteConversation.mutateAsync({ uuid: chatId })}>
+						Continue
+					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
