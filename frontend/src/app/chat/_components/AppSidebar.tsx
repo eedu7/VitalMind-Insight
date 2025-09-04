@@ -41,6 +41,7 @@ import {
 	IconUserCircle,
 } from "@tabler/icons-react";
 import { Loader2, MoreHorizontal } from "lucide-react";
+import { ChatModals } from "./ChatModals";
 
 export const AppSidebar = () => {
 	return (
@@ -146,16 +147,21 @@ const ChatListContent = () => {
 		return <div className="text-muted-foreground p-2">No chats yet</div>;
 	}
 
-	return allConversationsQuery.data?.map((conversation) => (
-		<SidebarMenuItem key={conversation.uuid} className="group/item">
-			<SidebarMenuButton asChild>
-				<Link prefetch={false} href={`/chat/${conversation.uuid}`}>
-					{conversation.title}
-				</Link>
-			</SidebarMenuButton>
-			<ChatActionDropDown chatId={conversation.uuid} chatTitle={conversation.title} />
-		</SidebarMenuItem>
-	));
+	return (
+		<>
+			{allConversationsQuery.data?.map((conversation) => (
+				<SidebarMenuItem key={conversation.uuid} className="group/item">
+					<SidebarMenuButton asChild>
+						<Link prefetch={false} href={`/chat/${conversation.uuid}`}>
+							{conversation.title}
+						</Link>
+					</SidebarMenuButton>
+					<ChatActionDropDown chatId={conversation.uuid} chatTitle={conversation.title} />
+				</SidebarMenuItem>
+			))}
+			<ChatModals />
+		</>
+	);
 };
 
 const ChatActionDropDown = ({ chatId, chatTitle }: { chatId: string; chatTitle: string }) => {
@@ -188,7 +194,6 @@ const ChatActionDropDown = ({ chatId, chatTitle }: { chatId: string; chatTitle: 
 		</div>
 	);
 };
-
 
 const UserAccountGroup = () => {
 	const { logout } = useAuth();
