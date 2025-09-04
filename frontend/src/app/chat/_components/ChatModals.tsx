@@ -10,7 +10,7 @@ export const ChatModals = () => {
 
 	switch (action) {
 		case "rename":
-			break;
+			return <RenameModal chatId={targetId} chatTitle={title} closeModal={closeModal} isOpen={isOpen} />;
 
 		case "delete":
 			return (
@@ -18,7 +18,7 @@ export const ChatModals = () => {
 			);
 
 		case "share":
-			break;
+			return <ShareModal chatId={targetId} chatTitle={title} closeModal={closeModal} isOpen={isOpen} />;
 
 		default:
 			break;
@@ -32,8 +32,24 @@ interface ModalProps {
 	closeModal: () => void;
 }
 
-const RenameModal = () => {
-	return <div>Delete Confirmation modal</div>;
+const RenameModal = ({ chatId, chatTitle, isOpen, closeModal }: ModalProps) => {
+	return (
+		<Dialog open={isOpen} onOpenChange={closeModal}>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Are you absolutely sure?</DialogTitle>
+					<DialogDescription>
+						This action cannot be undone. This will permanently delete your account and remove your data
+						from our servers.
+					</DialogDescription>
+				</DialogHeader>
+				<h1 className="text-xl font-bold hover:transform-3d">Rename</h1>
+
+				<div>ChatId: {chatId}</div>
+				<div>ChatId: {chatTitle}</div>
+			</DialogContent>
+		</Dialog>
+	);
 };
 
 const DeleteConfirmationModal = ({ chatId, chatTitle, isOpen, closeModal }: ModalProps) => {
@@ -54,6 +70,21 @@ const DeleteConfirmationModal = ({ chatId, chatTitle, isOpen, closeModal }: Moda
 	);
 };
 
-const ShareModal = () => {
-	return <div>Share Modal</div>;
+const ShareModal = ({ chatId, chatTitle, isOpen, closeModal }: ModalProps) => {
+	return (
+		<Dialog open={isOpen} onOpenChange={closeModal}>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Are you absolutely sure?</DialogTitle>
+					<DialogDescription>
+						This action cannot be undone. This will permanently delete your account and remove your data
+						from our servers.
+					</DialogDescription>
+				</DialogHeader>
+				<h1 className="text-xl font-bold hover:transform-3d">Share</h1>
+				<div>ChatId: {chatId}</div>
+				<div>ChatId: {chatTitle}</div>
+			</DialogContent>
+		</Dialog>
+	);
 };
