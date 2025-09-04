@@ -1,4 +1,5 @@
 import { Message } from "../messages";
+import { updateConversationApi } from "./api";
 
 export type Conversation = {
 	uuid: string;
@@ -6,4 +7,5 @@ export type Conversation = {
 	messages?: Message[];
 };
 
+export type UpdateConversation = Omit<Conversation, "messages">;
 export type DeleteConversation = Pick<Conversation, "uuid">;
