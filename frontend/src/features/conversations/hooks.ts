@@ -12,12 +12,10 @@ export function useConversations() {
 	const getConversationById = (conversationId: string) => {
 		return useQuery({
 			queryKey: ["getConversationById", conversationId],
-			queryFn: async () => {
-				await getConversationByIdApi({ uuid: conversationId });
-			},
+			queryFn: () => getConversationByIdApi({ uuid: conversationId }),
+			enabled: !!conversationId,
 		});
 	};
-
 	const updateConversation = useMutation({
 		mutationKey: ["updateConversation"],
 		mutationFn: updateConversationApi,
@@ -31,7 +29,9 @@ export function useConversations() {
 	const deleteConversation = useMutation({
 		mutationKey: ["deleteConversation"],
 		mutationFn: deleteConversationApi,
-		onSuccess: () => {},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["getAllConversations"] });
+		},
 	});
 
 	return {
