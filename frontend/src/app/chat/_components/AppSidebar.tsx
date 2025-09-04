@@ -40,7 +40,7 @@ import {
 	IconTrash,
 	IconUserCircle,
 } from "@tabler/icons-react";
-import { Loader2, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { ChatModals } from "./ChatModals";
 
 export const AppSidebar = () => {
@@ -132,12 +132,7 @@ const ChatListContent = () => {
 	if (state === "collapsed") return null;
 
 	if (allConversationsQuery.isPending) {
-		return (
-			<div className="flex items-center justify-between p-2">
-				<span>Loading...</span>
-				<Loader2 className="animate-spin" />
-			</div>
-		);
+		return <div className="text-muted-foreground p-2">Loading...</div>;
 	}
 	if (allConversationsQuery.isError) {
 		return <div className="p-2 text-red-500">Failed to load chats</div>;
