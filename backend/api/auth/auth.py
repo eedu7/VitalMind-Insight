@@ -3,7 +3,7 @@ from fastapi_limiter.depends import RateLimiter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.dependencies import services
-from db.session import get_session
+from db import get_session
 from schemas.auth import AuthLogin, AuthOut, AuthRegister
 from services import AuthService
 

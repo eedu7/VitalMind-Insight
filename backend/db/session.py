@@ -7,9 +7,7 @@ from core.config import settings
 
 engine = create_async_engine(str(settings.DATABASE_URL), echo=False, future=True)
 
-async_session = async_sessionmaker(
-    bind=engine, expire_on_commit=False, class_=AsyncSession
-)
+async_session = async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
 
 
 class Base(DeclarativeBase):
