@@ -10,6 +10,7 @@ services:
         depends_on:
             - database
             - redis
+            - test-database
         ports:
             - "${PORT}:${PORT}"
         expose:
@@ -31,6 +32,24 @@ services:
             - "${DB_PORT}:5432"
         expose:
             - "${DB_PORT}"
+    test-database:
+        image: postgres:17.6-alpine3.22
+        container_name: vitalmind-test-database
+        restart: always
+        env_file:
+            - .env
+        environment:
+            POSTGRES_USER: ${TEST_DB_USER}
+            POSTGRES_PASSWORD: ${TEST_DB_PASSWORD}
+            POSTGRES_DB: ${TEST_DB_NAME}
+        volumes:
+            - postgres_test_data:/var/lib/postgresql/data
+        ports:
+            - "${TEST_DB_PORT}:5432"
+        expose:
+            - "${TEST_DB_PORT}"
+            
+
 
     redis:
         image: redis:8.2.1-alpine3.22
@@ -51,6 +70,7 @@ services:
         restart: always
         depends_on:
             - database
+            - test-database
         environment:
             - PGADMIN_DEFAULT_EMAIL=admin@admin.com
             - PGADMIN_DEFAULT_PASSWORD=admin
@@ -63,5 +83,6 @@ services:
     
 volumes:
     postgres_data:
+    postgres_test_data:
     redis_data:
     pgadmin_data:
