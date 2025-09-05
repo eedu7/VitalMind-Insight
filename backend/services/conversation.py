@@ -5,7 +5,6 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.exceptions import NotFoundException
 from crud.conversation import ConversationCRUD
 from db.models import Conversation
 
@@ -24,7 +23,7 @@ class ConversationService:
         conversation: Conversation | None = await self.crud.get_by_uuid(uuid, session)
 
         if not conversation:
-            raise NotFoundException(f"No conversation found with uuid {uuid}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No conversation found")
 
         return conversation
 
@@ -42,7 +41,9 @@ class ConversationService:
         conversation = await self.crud.get_by_uuid(uuid, session)
 
         if not conversation:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No conversation found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"No conversation found with the uuid {uuid}"
+            )
 
         await self.crud.delete(conversation, session=session)
 
@@ -51,4 +52,6 @@ class ConversationService:
         updated = await self.crud.update_by_uuid(uuid, values, session)
 
         if not updated:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No conversation found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail=f"No conversation found with the uuid {uuid}"
+            )

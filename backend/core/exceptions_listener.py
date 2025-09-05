@@ -1,21 +1,8 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 
-from core.exceptions import CustomException
-
 
 def init_listeners(app_: FastAPI) -> None:
-    @app_.exception_handler(CustomException)
-    async def custom_exception_handler(request: Request, exc: CustomException):  # type: ignore
-        return JSONResponse(
-            status_code=exc.code,
-            content={
-                "error_code": exc.error_code,
-                "message": exc.message,
-                "path": str(request.url),
-            },
-        )
-
     @app_.exception_handler(HTTPException)
     async def http_exception_handler(request: Request, exc: HTTPException):  # type: ignore
         return JSONResponse(
