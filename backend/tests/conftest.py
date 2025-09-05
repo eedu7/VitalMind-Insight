@@ -41,7 +41,7 @@ async def redis_client():
 
 
 @pytest_asyncio.fixture()
-async def client() -> AsyncGenerator[AsyncClient, Any]:
+async def client(redis_client: Redis) -> AsyncGenerator[AsyncClient, Any]:
     app.dependency_overrides[get_session] = override_get_session
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
