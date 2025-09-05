@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int
 
+    # Test Redis
+    TEST_REDIS_HOST: str
+    TEST_REDIS_PORT: int
+
     # Cookie
     COOKIE_SECURE: bool = True
     COOKIE_HTTPONLY: bool = True
@@ -63,6 +67,10 @@ class Settings(BaseSettings):
     @property
     def REDIS_URL(self) -> str:
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+
+    @property
+    def TEST_REDIS_URL(self) -> str:
+        return f"redis://{self.TEST_REDIS_HOST}:{self.TEST_REDIS_PORT}"
 
     @property
     def GET_ALLOWED_ORIGINS(self) -> List[str]:

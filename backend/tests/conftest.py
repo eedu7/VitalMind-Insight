@@ -1,8 +1,11 @@
 from collections.abc import AsyncGenerator
 from typing import Any
 
-import pytest
+import pytest_asyncio
+import redis.asyncio as redis
+from fastapi_limiter import FastAPILimiter
 from httpx import ASGITransport, AsyncClient
+from redis.asyncio.client import Redis
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from core.config import settings
@@ -19,7 +22,7 @@ async def override_get_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="session", autouse=True)
 async def prepare_database():
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
@@ -29,7 +32,15 @@ async def prepare_database():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture()
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def redis_client():
+    client: Redis = redis.from_url(settings.TEST_REDIS_URL, encoding="utf8", decode_responses=True)  # type: ignore
+    await FastAPILimiter.init(client)  # type: ignore
+    yield client
+    await client.aclose()
+
+
+@pytest_asyncio.fixture()
 async def client() -> AsyncGenerator[AsyncClient, Any]:
     app.dependency_overrides[get_session] = override_get_session
     transport = ASGITransport(app=app)
