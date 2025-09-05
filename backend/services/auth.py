@@ -1,10 +1,10 @@
 from uuid import UUID
 
-from fastapi import HTTPException, status
 from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
+from core.exceptions import DuplicateValueException, UnauthorizedException
 from core.security import jwt_handler, token_blacklist
 from core.security.blacklist import TokenBlacklist
 from core.security.jwt_handler import JwtHandler
@@ -24,14 +24,9 @@ class AuthService:
         conflicts = await self.crud.check_user_exists(email=str(email), username=username, session=session)
 
         if conflicts["username"]:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Username already exists",
-            )
-
+            raise DuplicateValueException("Username already exists")
         if conflicts["email"]:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already exists")
-
+            raise DuplicateValueException("Email already exists")
         # Hash password
         hashed_password = Password.hash_password(password)
 
@@ -47,11 +42,8 @@ class AuthService:
     async def login(self, email: EmailStr, password: str, session: AsyncSession) -> AuthOut:
         user: User | None = await self.crud.get_by_email(str(email), session)
 
-        if not user:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found.")
-
-        if not Password.verify_password(password, user.password):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials.")
+        if not user or not Password.verify_password(password, user.password):
+            raise UnauthorizedException("Invalid credentials")
 
         return self._generate_token(user.uuid, user.username, user.email)
 
@@ -60,10 +52,7 @@ class AuthService:
         refresh_payload = self.jwt_handler.decode(refresh_token, expected_type="refresh")
 
         if access_payload.get("sub") != refresh_payload.get("sub"):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Access and refresh token do not match.",
-            )
+            raise UnauthorizedException("Access and refresh token do not match")
 
         await self.blacklist.add(access_payload)
         await self.blacklist.add(refresh_payload)
