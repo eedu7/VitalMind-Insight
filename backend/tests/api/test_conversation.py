@@ -104,19 +104,48 @@ async def test_get_conversation_by_uuid_not_found(client: AsyncClient, auth_head
 # -------------------------------
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_update_conversation_success(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    payload = {"title": "How was your day?"}
+    conversation_response = await client.post(f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers)
+
+    conversation_uuid = conversation_response.json()["uuid"]
+
+    payload["title"] = "updated title"
+
+    await client.put(f"{BASE_API_ENDPOINT}/{conversation_uuid}", json=payload, headers=auth_headers)
+
+    response = await client.get(f"{BASE_API_ENDPOINT}/{conversation_uuid}", headers=auth_headers)
+
+    assert response.status_code == 200
+
+    assert response.json()["title"] == payload["title"]
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_update_conversation_not_found(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    payload = {"title": "How was your day?"}
+    await client.post(f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers)
+
+    conversation_uuid = uuid4()
+
+    payload["title"] = "updated title"
+
+    response = await client.put(f"{BASE_API_ENDPOINT}/{conversation_uuid}", json=payload, headers=auth_headers)
+
+    assert response.status_code == 404
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_update_conversation_missing_title(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    payload = {"title": "How was your day?"}
+    await client.post(f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers)
+
+    conversation_uuid = uuid4()
+
+    response = await client.put(f"{BASE_API_ENDPOINT}/{conversation_uuid}", headers=auth_headers)
+
+    assert response.status_code == 422
 
 
 # -------------------------------
@@ -124,26 +153,28 @@ async def test_update_conversation_missing_title(client: AsyncClient, auth_heade
 # -------------------------------
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_delete_conversation_success(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    payload = {"title": "How was your day?"}
+    conversation_response = await client.post(f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers)
+
+    conversation_uuid = conversation_response.json()["uuid"]
+
+    response = await client.delete(f"{BASE_API_ENDPOINT}/{conversation_uuid}", headers=auth_headers)
+
+    assert response.status_code == 200
+
+    assert "message" in response.json()
+
+    response = await client.get(f"{BASE_API_ENDPOINT}/{conversation_uuid}", headers=auth_headers)
+
+    assert response.status_code == 404
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_delete_conversation_not_found(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    conversation_uuid = uuid4()
 
+    response = await client.delete(f"{BASE_API_ENDPOINT}/{conversation_uuid}", headers=auth_headers)
 
-# -------------------------------
-# RATE LIMITING / EDGE CASES
-# -------------------------------
-
-
-@pytest.mark.skip
-async def test_conversation_rate_limit(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
-
-
-@pytest.mark.skip
-async def test_concurrent_conversation_creations(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    assert response.status_code == 404
