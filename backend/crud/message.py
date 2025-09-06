@@ -29,3 +29,11 @@ class MessageCRUD(BaseCRUD[Message]):
         result = await session.execute(stmt)
         await session.commit()
         return result.scalar_one()
+
+    async def get_by_conversation_uuid(self, conversation_uuid: UUID, session: AsyncSession):
+        stmt = select(Message).where(
+            Message.conversation_id == select(Conversation.id).where(Conversation.uuid == conversation_uuid).subquery()
+        )
+
+        result = await session.execute(stmt)
+        return result.scalars().all()
