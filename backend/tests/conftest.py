@@ -32,9 +32,10 @@ async def prepare_database():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest_asyncio.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(scope="function", autouse=True)
 async def redis_client():
     client: Redis = redis.from_url(settings.TEST_REDIS_URL, encoding="utf8", decode_responses=True)  # type: ignore
+    await client.flushall()  # type: ignore
     await FastAPILimiter.init(client)  # type: ignore
     yield client
     await FastAPILimiter.close()
