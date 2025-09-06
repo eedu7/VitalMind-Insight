@@ -9,7 +9,7 @@ from db import get_session
 from schemas.message import MessageCreate, MessageOut, MessageUpdate
 from services import MessageService
 
-router = APIRouter(dependencies=[Depends(AuthenticationRequired)])
+router = APIRouter(dependencies=[Depends(AuthenticationRequired())])
 
 
 @router.get("/{message_uuid}", response_model=MessageOut)

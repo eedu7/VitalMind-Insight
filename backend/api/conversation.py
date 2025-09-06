@@ -10,7 +10,7 @@ from db.models import User
 from schemas.conversation import ConversationCreate, ConversationCreateOut, ConversationOut, ConversationUpdate
 from services import ConversationService
 
-router = APIRouter(dependencies=[Depends(AuthenticationRequired)])
+router = APIRouter(dependencies=[Depends(AuthenticationRequired())])
 
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=List[ConversationOut])
