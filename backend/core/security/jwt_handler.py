@@ -26,8 +26,9 @@ class JwtHandler:
         payload: Dict[str, Any],
         token_type: JWTTokenType,
         expire_minutes: int = 1440,
+        expire_seconds: int = 0,
     ) -> str:
-        expire_time = get_timestamp(minutes=expire_minutes)
+        expire_time = get_timestamp(minutes=expire_minutes, seconds=expire_seconds)
         payload.update(
             {
                 "exp": expire_time,
@@ -43,9 +44,7 @@ class JwtHandler:
             self.algorithm,
         )
 
-    def decode(
-        self, token: str, expected_type: JWTTokenType, verify_exp: bool = True
-    ) -> Dict[str, Any]:
+    def decode(self, token: str, expected_type: JWTTokenType, verify_exp: bool = True) -> Dict[str, Any]:
         try:
             payload = jwt.decode(  # type: ignore
                 jwt=token,
@@ -62,10 +61,6 @@ class JwtHandler:
 
             return payload
         except ExpiredSignatureError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired token"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Expired token")
         except InvalidTokenError:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
