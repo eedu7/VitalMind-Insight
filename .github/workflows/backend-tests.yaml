@@ -10,11 +10,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04   # stable LTS runner
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
-        image: postgres:16.4-slim
+        image: postgres:16-alpine
         env:
           POSTGRES_USER: test_user
           POSTGRES_PASSWORD: test_password
@@ -28,7 +28,7 @@ jobs:
           --health-retries=5
 
       redis:
-        image: redis:7.4-alpine
+        image: redis:7-alpine
         ports:
           - 6379:6379
         options: >-
@@ -49,7 +49,7 @@ jobs:
       - name: Install uv
         run: pip install uv
 
-      - name: Install dependencies with uv
+      - name: Install backend dependencies
         working-directory: backend
         run: uv sync --all-extras --dev
 
