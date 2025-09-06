@@ -38,3 +38,13 @@ class ConversationOut(ConversationCreate):
     )
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ConversationCreateOut(ConversationCreate):
+    uuid: UUID = Field(
+        ...,
+        description="Unique identifier of the conversation.",
+        examples=["550e8400-e29b-41d4-a716-446655440000"],
+    )
+
+    model_config = ConfigDict(from_attributes=True)

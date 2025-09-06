@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.dependencies import AuthenticationRequired, get_current_active_user, services
 from db import get_session
 from db.models import User
-from schemas.conversation import ConversationCreate, ConversationOut, ConversationUpdate
+from schemas.conversation import ConversationCreate, ConversationCreateOut, ConversationOut, ConversationUpdate
 from services import ConversationService
 
 router = APIRouter(dependencies=[Depends(AuthenticationRequired)])
@@ -31,7 +31,7 @@ async def get_conversation_by_uuid(
     return await conversation_service.get_conversation_by_uuid(conversation_uuid, session)
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ConversationOut)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ConversationCreateOut)
 async def create_conversation(
     data: ConversationCreate,
     current_user: User = Depends(get_current_active_user),
