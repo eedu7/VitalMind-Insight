@@ -1,103 +1,104 @@
 services:
-    backend:
-        build:
-            context: ./backend
-            dockerfile: Dockerfile
-            target: production
-        container_name: vitalmind-backend
-        env_file:
-            - .env
-        depends_on:
-            - database
-            - redis
-            - test-database
-        ports:
-            - "${PORT}:${PORT}"
-        expose:
-            - "${PORT}"
-    database:
-        image: postgres:17.6-alpine3.22
-        container_name: vitalmind-database
-        restart: always
-        env_file:
-            - .env
-        environment:
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_PASSWORD: ${DB_PASSWORD}
-            POSTGRES_DB: ${DB_NAME}
-        volumes:
-            - postgres_data:/var/lib/postgresql/data
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: vitalmind-backend
+    env_file:
+      - .env
+    depends_on:
+      - database
+      - redis
+      - test-database
+      - test-redis
+    ports:
+      - "${PORT}:${PORT}"
+    expose:
+      - "${PORT}"
 
-        ports:
-            - "${DB_PORT}:5432"
-        expose:
-            - "${DB_PORT}"
-    test-database:
-        image: postgres:17.6-alpine3.22
-        container_name: vitalmind-test-database
-        restart: always
-        env_file:
-            - .env
-        environment:
-            POSTGRES_USER: ${TEST_DB_USER}
-            POSTGRES_PASSWORD: ${TEST_DB_PASSWORD}
-            POSTGRES_DB: ${TEST_DB_NAME}
-        volumes:
-            - postgres_test_data:/var/lib/postgresql/data
-        ports:
-            - "${TEST_DB_PORT}:5432"
-        expose:
-            - "${TEST_DB_PORT}"
-            
+  database:
+    image: postgres:16.4-slim
+    container_name: vitalmind-database
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:5432"
+    expose:
+      - "${DB_PORT}"
 
+  test-database:
+    image: postgres:16.4-slim
+    container_name: vitalmind-test-database
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${TEST_DB_USER}
+      POSTGRES_PASSWORD: ${TEST_DB_PASSWORD}
+      POSTGRES_DB: ${TEST_DB_NAME}
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    ports:
+      - "${TEST_DB_PORT}:5432"
+    expose:
+      - "${TEST_DB_PORT}"
 
-    redis:
-        image: redis:8.2.1-alpine3.22
-        container_name: vitalmind-redis
-        restart: always
-        env_file:
-            - .env
-        command: ["redis-server", "--appendonly", "yes"]
-        ports:
-            - "${REDIS_PORT}:6379"
-        expose:
-            - "${REDIS_PORT}"
-        volumes:
-            - redis_data:/data
+  redis:
+    image: redis:7.4-alpine
+    container_name: vitalmind-redis
+    restart: always
+    env_file:
+      - .env
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT}:6379"
+    expose:
+      - "${REDIS_PORT}"
+    volumes:
+      - redis_data:/data
 
-    test-redis:
-        image: redis:8.2.1-alpine3.22
-        container_name: vitalmind-test-redis
-        restart: always
-        env_file:
-            - .env
-        command: ["redis-server", "--appendonly", "yes"]
-        ports:
-            - "${TEST_REDIS_PORT}:6379"
-        expose:
-            - "${TEST_REDIS_PORT}"
-        volumes:
-            - test_redis_data:/data
+  test-redis:
+    image: redis:7.4-alpine
+    container_name: vitalmind-test-redis
+    restart: always
+    env_file:
+      - .env
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${TEST_REDIS_PORT}:6379"
+    expose:
+      - "${TEST_REDIS_PORT}"
+    volumes:
+      - test_redis_data:/data
 
-    pgadmin:
-        image: dpage/pgadmin4:2025-09-01-1
-        restart: always
-        depends_on:
-            - database
-            - test-database
-        environment:
-            - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-            - PGADMIN_DEFAULT_PASSWORD=admin
-        ports:
-            - "5050:80"
-        expose:
-            - "5050"
-        volumes:
-            - pgadmin_data:/var/lib/pgadmin
-    
+  pgadmin:
+    image: dpage/pgadmin4:8.14
+    container_name: vitalmind-pgadmin
+    restart: always
+    depends_on:
+      - database
+      - test-database
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    expose:
+      - "5050"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
 volumes:
-    postgres_data:
-    postgres_test_data:
-    redis_data:
-    test_redis_data:
-    pgadmin_data:
+  postgres_data:
+  postgres_test_data:
+  redis_data:
+  test_redis_data:
+  pgadmin_data:
