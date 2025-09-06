@@ -48,14 +48,25 @@ async def test_create_missing_header(
 # -------------------------------
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_get_all_conversations_success(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    response = await client.get(f"{BASE_API_ENDPOINT}/", headers=auth_headers)
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert isinstance(data, list)
 
 
 @pytest.mark.skip
-async def test_get_all_conversations_empty(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+async def test_get_all_conversation_no_header(
+    client: AsyncClient,
+):
+    response = await client.get(
+        f"{BASE_API_ENDPOINT}/",
+    )
+
+    assert response.status_code == 401
 
 
 # -------------------------------
