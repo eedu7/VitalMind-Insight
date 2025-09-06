@@ -23,9 +23,24 @@ async def test_create_conversation_success(client: AsyncClient, auth_headers: Di
     assert data["title"] == payload["title"]
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_create_conversation_missing_title(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    response = await client.post(f"{BASE_API_ENDPOINT}/", json={}, headers=auth_headers)
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_create_missing_header(
+    client: AsyncClient,
+):
+    payload = {"title": "How was your day?"}
+    response = await client.post(
+        f"{BASE_API_ENDPOINT}/",
+        json=payload,
+    )
+
+    assert response.status_code == 401
 
 
 # -------------------------------
