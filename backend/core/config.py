@@ -13,26 +13,26 @@ TYPE_COOKIE_SAMESITE = Literal["strict", "lax", "none"]
 
 class Settings(BaseSettings):
     # Database
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_NAME: str
-    DB_HOST: str
-    DB_PORT: int
+    DB_USER: str = "myuser"
+    DB_PASSWORD: str = "mypassword"
+    DB_NAME: str = "mydb"
+    DB_HOST: str = "localhost"
+    DB_PORT: int = 5432
 
     # Test
-    TEST_DB_USER: str
-    TEST_DB_PASSWORD: str
-    TEST_DB_NAME: str
-    TEST_DB_HOST: str
-    TEST_DB_PORT: int
+    TEST_DB_USER: str = "myuser"
+    TEST_DB_PASSWORD: str = "mypassword"
+    TEST_DB_NAME: str = "mydb"
+    TEST_DB_HOST: str = "localhost"
+    TEST_DB_PORT: int = 5433
 
     # Redis
-    REDIS_HOST: str
-    REDIS_PORT: int
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
 
     # Test Redis
-    TEST_REDIS_HOST: str
-    TEST_REDIS_PORT: int
+    TEST_REDIS_HOST: str = "localhost"
+    TEST_REDIS_PORT: int = 6380
 
     # Cookie
     COOKIE_SECURE: bool = True
@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     JWT_REFRESH_EXPIRE_MINUTES: int = 60 * 24 * 7
 
     # Environment
-    ENVIRONMENT: str
+    ENVIRONMENT: str = "development"
 
     model_config = SettingsConfigDict(env_file=str(ENV_FILE), extra="ignore")
 
