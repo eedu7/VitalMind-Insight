@@ -53,16 +53,6 @@ jobs:
         working-directory: backend
         run: uv sync --all-extras --dev
 
-      - name: Run migrations
-        working-directory: backend
-        env:
-          TEST_DB_USER: test_user
-          TEST_DB_PASSWORD: test_password
-          TEST_DB_NAME: test_db
-          TEST_DB_HOST: localhost
-          TEST_DB_PORT: 5432
-        run: uv run alembic upgrade head
-
       - name: Run tests
         working-directory: backend
         env:
