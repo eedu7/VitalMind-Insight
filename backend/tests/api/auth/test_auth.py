@@ -94,6 +94,8 @@ async def test_register_rate_limit(client: AsyncClient):
 # -------------------------------
 # LOGIN TESTS
 # -------------------------------
+
+
 @pytest.mark.asyncio
 async def test_login_success(client: AsyncClient, user_data: Dict[str, str]):
     await client.post(f"{BASE_API_ENDPOINT}/register", json=user_data)
@@ -108,3 +110,104 @@ async def test_login_success(client: AsyncClient, user_data: Dict[str, str]):
     assert "access_token" in data
     assert "refresh_token" in data
     assert "token_type" in data
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"password": "Password@123"},  # missing email
+        {"email": "john.doe@example.com"},  # missing password
+        {},  # all missing
+    ],
+)
+async def test_login_user_missing_values(client: AsyncClient, payload: Dict[str, Any]):
+    response = await client.post(f"{BASE_API_ENDPOINT}/login", json=payload)
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_login_user_not_found(client: AsyncClient):
+    payload = {"email": "not.fount@example.com", "password": "Password@123"}
+    response = await client.post(f"{BASE_API_ENDPOINT}/login", json=payload)
+
+    assert response.status_code == 400
+    assert response.json()["message"] == "Invalid credentials"
+
+
+@pytest.mark.asyncio
+async def test_login_user_invalid_password(client: AsyncClient, user_data: Dict[str, str]):
+    await client.post(f"{BASE_API_ENDPOINT}/register", json=user_data)
+    user_data.pop("username")
+    user_data["password"] = "Password"
+    response = await client.post(f"{BASE_API_ENDPOINT}/login", json=user_data)
+
+    assert response.status_code == 400
+    assert response.json()["message"] == "Invalid credentials"
+
+
+@pytest.mark.asyncio
+async def test_login_user_rate_limiting(client: AsyncClient, user_data: Dict[str, str]):
+    user_data.pop("username")
+    await client.post(f"{BASE_API_ENDPOINT}/login", json=user_data)
+    await client.post(f"{BASE_API_ENDPOINT}/login", json=user_data)
+    await client.post(f"{BASE_API_ENDPOINT}/login", json=user_data)
+    await client.post(f"{BASE_API_ENDPOINT}/login", json=user_data)
+    await client.post(f"{BASE_API_ENDPOINT}/login", json=user_data)
+    response = await client.post(f"{BASE_API_ENDPOINT}/login", json=user_data)
+
+    assert response.status_code == 429
+
+
+# -------------------------------
+# LOGIN TESTS
+# -------------------------------
+
+
+@pytest.mark.asyncio
+async def test_logout_success(client: AsyncClient, auth_token: Dict[str, str]):
+    response = await client.post(f"{BASE_API_ENDPOINT}/logout", json=auth_token)
+
+    assert response.status_code == 200
+    assert "message" in response.json()
+    assert response.json()["message"] == "Successfully logged out."
+
+
+@pytest.mark.asyncio
+async def test_logout_invalid_access_token(client: AsyncClient, auth_token: Dict[str, str]):
+    auth_token["access_token"] = "INVALID_ACCESS_TOKEN"
+    response = await client.post(f"{BASE_API_ENDPOINT}/logout", json=auth_token)
+
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+async def test_logout_invalid_refresh_token(client: AsyncClient, auth_token: Dict[str, str]):
+    auth_token["refresh_token"] = "INVALID_REFRESH_TOKEN"
+    response = await client.post(f"{BASE_API_ENDPOINT}/logout", json=auth_token)
+
+    assert response.status_code == 401
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"access_token": "ACCESS_TOKEN"},  # missing refresh token
+        {"refresh_token": "REFRESH_TOKEN"},  # missing access token
+        {},  # missing all values
+    ],
+)
+async def test_logout_missing_values(client: AsyncClient, payload: Dict[str, str]):
+    response = await client.post(f"{BASE_API_ENDPOINT}/logout", json=payload)
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_logout_rate_limiting(client: AsyncClient, auth_token: Dict[str, str]):
+    await client.post(f"{BASE_API_ENDPOINT}/logout", json=auth_token)
+    await client.post(f"{BASE_API_ENDPOINT}/logout", json=auth_token)
+    response = await client.post(f"{BASE_API_ENDPOINT}/logout", json=auth_token)
+
+    assert response.status_code == 429

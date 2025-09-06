@@ -47,11 +47,8 @@ class AuthService:
     async def login(self, email: EmailStr, password: str, session: AsyncSession) -> AuthOut:
         user: User | None = await self.crud.get_by_email(str(email), session)
 
-        if not user:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found.")
-
-        if not Password.verify_password(password, user.password):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials.")
+        if not user or not Password.verify_password(password, user.password):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid credentials")
 
         return self._generate_token(user.uuid, user.username, user.email)
 

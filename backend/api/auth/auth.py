@@ -52,6 +52,7 @@ async def login(
 async def logout(
     data: AuthLogOut,
 ):
+    # TODO: Properly handle this, be sure, the provided token are of the same user or not
     access_payload = jwt_handler.decode(data.access_token, expected_type="access")
     refresh_payload = jwt_handler.decode(data.refresh_token, expected_type="refresh")
 
