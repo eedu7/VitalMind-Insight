@@ -44,7 +44,6 @@ class BaseCRUD(Generic[ModelType]):
     async def create(self, obj: ModelType, session: AsyncSession) -> ModelType:
         session.add(obj)
         await session.commit()
-        await session.refresh(obj)
         return obj
 
     async def update(self, _id: int, values: Dict[str, Any], session: AsyncSession) -> None:
