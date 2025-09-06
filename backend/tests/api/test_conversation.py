@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from uuid import uuid4
 
 import pytest
 from httpx import AsyncClient
@@ -58,7 +59,7 @@ async def test_get_all_conversations_success(client: AsyncClient, auth_headers: 
     assert isinstance(data, list)
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_get_all_conversation_no_header(
     client: AsyncClient,
 ):
@@ -74,14 +75,28 @@ async def test_get_all_conversation_no_header(
 # -------------------------------
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_get_conversation_by_uuid_success(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    payload = {"title": "How was your day?"}
+    response = await client.post(f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers)
+
+    conversation_uuid = response.json()["uuid"]
+
+    response = await client.get(f"{BASE_API_ENDPOINT}/{conversation_uuid}", headers=auth_headers)
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "uuid" in data
+    assert "title" in data
 
 
-@pytest.mark.skip
+@pytest.mark.asyncio
 async def test_get_conversation_by_uuid_not_found(client: AsyncClient, auth_headers: Dict[str, Any]):
-    raise NotImplementedError
+    dummy_uuid = uuid4()
+
+    response = await client.get(f"{BASE_API_ENDPOINT}/{dummy_uuid}", headers=auth_headers)
+
+    assert response.status_code == 404
 
 
 # -------------------------------
