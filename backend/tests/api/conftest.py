@@ -45,3 +45,14 @@ async def auth_headers(client: AsyncClient, user_data: Dict[str, str]) -> Dict[s
     response = await client.post("/api/auth/register", json=user_data)
     tokens = response.json()
     return {"Authorization": f"Bearer {tokens['access_token']}"}
+
+
+@pytest.fixture(scope="function")
+async def conversation_uuid(client: AsyncClient, auth_headers: Dict[str, str]) -> str:
+    response = await client.post("/api/conversation/", json={"title": "Test conversation"}, headers=auth_headers)
+    return response.json()["uuid"]
+
+
+@pytest.fixture(scope="function")
+def message_payload(conversation_uuid: str) -> Dict[str, str]:
+    return {"role": "user", "content": "Hello, I need help with my account.", "conversation_uuid": conversation_uuid}
