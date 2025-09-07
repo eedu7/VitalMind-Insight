@@ -91,7 +91,9 @@ async def test_get_conversation_by_uuid_success(client: AsyncClient, auth_header
 
 
 @pytest.mark.asyncio
-async def test_get_conversation_by_uuid_not_found(client: AsyncClient, auth_headers: Dict[str, Any]):
+async def test_get_conversation_by_uuid_not_found(
+    client: AsyncClient, auth_headers: Dict[str, Any]
+):
     dummy_uuid = uuid4()
 
     response = await client.get(f"{BASE_API_ENDPOINT}/{dummy_uuid}", headers=auth_headers)
@@ -107,7 +109,9 @@ async def test_get_conversation_by_uuid_not_found(client: AsyncClient, auth_head
 @pytest.mark.asyncio
 async def test_update_conversation_success(client: AsyncClient, auth_headers: Dict[str, Any]):
     payload = {"title": "How was your day?"}
-    conversation_response = await client.post(f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers)
+    conversation_response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers
+    )
 
     conversation_uuid = conversation_response.json()["uuid"]
 
@@ -131,7 +135,9 @@ async def test_update_conversation_not_found(client: AsyncClient, auth_headers: 
 
     payload["title"] = "updated title"
 
-    response = await client.put(f"{BASE_API_ENDPOINT}/{conversation_uuid}", json=payload, headers=auth_headers)
+    response = await client.put(
+        f"{BASE_API_ENDPOINT}/{conversation_uuid}", json=payload, headers=auth_headers
+    )
 
     assert response.status_code == 404
 
@@ -156,7 +162,9 @@ async def test_update_conversation_missing_title(client: AsyncClient, auth_heade
 @pytest.mark.asyncio
 async def test_delete_conversation_success(client: AsyncClient, auth_headers: Dict[str, Any]):
     payload = {"title": "How was your day?"}
-    conversation_response = await client.post(f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers)
+    conversation_response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=payload, headers=auth_headers
+    )
 
     conversation_uuid = conversation_response.json()["uuid"]
 

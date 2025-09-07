@@ -14,12 +14,17 @@ from db.models import Base
 from db.session import get_session
 
 test_engine = create_async_engine(settings.TEST_DATABASE_URL, echo=False, future=True)
-TestingSessionLocal = async_sessionmaker(bind=test_engine, expire_on_commit=False, class_=AsyncSession)
+TestingSessionLocal = async_sessionmaker(
+    bind=test_engine, expire_on_commit=False, class_=AsyncSession
+)
 
 
 async def override_get_session() -> AsyncGenerator[AsyncSession, None]:
     async with TestingSessionLocal() as session:
-        yield session
+        try:
+            yield session
+        finally:
+            await session.rollback()
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
@@ -42,7 +47,7 @@ async def redis_client():
     await client.aclose()
 
 
-@pytest_asyncio.fixture()
+@pytest_asyncio.fixture(scope="function")
 async def client(redis_client: Redis) -> AsyncGenerator[AsyncClient, Any]:
     app.dependency_overrides[get_session] = override_get_session
     transport = ASGITransport(app=app)

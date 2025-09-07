@@ -58,7 +58,10 @@ async def test_web_register_user_missing_values(client: AsyncClient, payload: Di
     ],
 )
 async def test_web_register_user_conflicts(
-    client: AsyncClient, payload_first: Dict[str, str], payload_second: Dict[str, str], expected_detail: str
+    client: AsyncClient,
+    payload_first: Dict[str, str],
+    payload_second: Dict[str, str],
+    expected_detail: str,
 ):
     await client.post(f"{BASE_API_ENDPOINT}/register", json=payload_first)
 

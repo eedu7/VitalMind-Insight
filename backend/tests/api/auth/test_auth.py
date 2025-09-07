@@ -64,7 +64,10 @@ async def test_register_user_missing_values(client: AsyncClient, payload: Dict[s
     ],
 )
 async def test_register_user_conflicts(
-    client: AsyncClient, payload_first: Dict[str, str], payload_second: Dict[str, str], expected_detail: str
+    client: AsyncClient,
+    payload_first: Dict[str, str],
+    payload_second: Dict[str, str],
+    expected_detail: str,
 ):
     # Create first user
     await client.post(f"{BASE_API_ENDPOINT}/register", json=payload_first)
@@ -79,13 +82,25 @@ async def test_register_user_conflicts(
 
 @pytest.mark.asyncio
 async def test_register_rate_limit(client: AsyncClient):
-    payload_first = {"email": "john.doe.first@example.com", "username": "john.doe.first", "password": "Password@123"}
+    payload_first = {
+        "email": "john.doe.first@example.com",
+        "username": "john.doe.first",
+        "password": "Password@123",
+    }
     await client.post(f"{BASE_API_ENDPOINT}/register", json=payload_first)
 
-    payload_second = {"email": "john.doe.second@example.com", "username": "john.doe.second", "password": "Password@123"}
+    payload_second = {
+        "email": "john.doe.second@example.com",
+        "username": "john.doe.second",
+        "password": "Password@123",
+    }
     await client.post(f"{BASE_API_ENDPOINT}/register", json=payload_second)
 
-    payload_third = {"email": "john.doe.third@example.com", "username": "john.doe.third", "password": "Password@123"}
+    payload_third = {
+        "email": "john.doe.third@example.com",
+        "username": "john.doe.third",
+        "password": "Password@123",
+    }
     response = await client.post(f"{BASE_API_ENDPOINT}/register", json=payload_third)
 
     assert response.status_code == 429

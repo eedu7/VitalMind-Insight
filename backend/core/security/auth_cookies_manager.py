@@ -60,4 +60,6 @@ class AuthCookieManager:
 
     @classmethod
     def _delete(cls, response: Response, key: str) -> None:
-        response.delete_cookie(key=key, httponly=cls._httponly, secure=cls._secure, samesite=cls._samesite)
+        response.delete_cookie(
+            key=key, httponly=cls._httponly, secure=cls._secure, samesite=cls._samesite
+        )

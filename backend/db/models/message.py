@@ -23,7 +23,9 @@ class Role(StrEnum):
 class Message(PKUUIDMixin, Base, TimeStampMixin):
     __tablename__: str = "messages"
 
-    conversation_id: Mapped[int] = mapped_column(Integer, ForeignKey("conversations.id", ondelete="CASCADE"))
+    conversation_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("conversations.id", ondelete="CASCADE")
+    )
     role: Mapped[Role] = mapped_column(Enum(Role), default=Role.USER)
     content: Mapped[str] = mapped_column(Text, nullable=False)
 

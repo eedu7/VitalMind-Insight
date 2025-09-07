@@ -49,9 +49,7 @@ async def web_login(
     auth_service: AuthService = Depends(services.get_auth_service),
     session: AsyncSession = Depends(get_session),
 ):
-    token = await auth_service.login(
-        email=data.email, password=data.password, session=session
-    )
+    token = await auth_service.login(email=data.email, password=data.password, session=session)
     AuthCookieManager.set_tokens(
         response=response,
         access_token=token.access_token,

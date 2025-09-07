@@ -43,6 +43,4 @@ class Password:
         """
         if not plain_password or not hashed_password:
             raise ValueError("Passwords cannot be empty or None")
-        return bcrypt.checkpw(
-            plain_password.encode("utf-8"), hashed_password.encode("utf-8")
-        )
+        return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))

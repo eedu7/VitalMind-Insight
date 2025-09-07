@@ -29,13 +29,17 @@ class BaseCRUD(Generic[ModelType]):
         result = await session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_all_by_filters(self, session: AsyncSession, filters: Dict[str, Any]) -> Sequence[ModelType]:
+    async def get_all_by_filters(
+        self, session: AsyncSession, filters: Dict[str, Any]
+    ) -> Sequence[ModelType]:
         conditions = [getattr(self.model, field) == value for field, value in filters.items()]
         stmt = select(self.model).where(and_(*conditions))  # type: ignore
         result = await session.execute(stmt)
         return result.scalars().all()
 
-    async def get_one_by_filters(self, session: AsyncSession, filters: Dict[str, Any]) -> ModelType | None:
+    async def get_one_by_filters(
+        self, session: AsyncSession, filters: Dict[str, Any]
+    ) -> ModelType | None:
         conditions = [getattr(self.model, field) == value for field, value in filters.items()]
         stmt = select(self.model).where(and_(*conditions))  # type: ignore
         result = await session.execute(stmt)
@@ -55,7 +59,9 @@ class BaseCRUD(Generic[ModelType]):
         await session.delete(obj)
         await session.commit()
 
-    async def update_by_uuid(self, uuid: UUID, values: Dict[str, Any], session: AsyncSession) -> bool:
+    async def update_by_uuid(
+        self, uuid: UUID, values: Dict[str, Any], session: AsyncSession
+    ) -> bool:
         stmt = (
             update(self.model)
             .where(self.model.uuid == uuid)  # type: ignore

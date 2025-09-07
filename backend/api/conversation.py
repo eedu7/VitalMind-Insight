@@ -7,7 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core.dependencies import AuthenticationRequired, get_current_active_user, services
 from db import get_session
 from db.models import User
-from schemas.conversation import ConversationCreate, ConversationCreateOut, ConversationOut, ConversationUpdate
+from schemas.conversation import (
+    ConversationCreate,
+    ConversationCreateOut,
+    ConversationOut,
+    ConversationUpdate,
+)
 from services import ConversationService
 
 router = APIRouter(dependencies=[Depends(AuthenticationRequired())])

@@ -15,7 +15,5 @@ class UserService:
         user: User | None = await self.crud.get_by_uuid(uuid, session)
 
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-            )
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
         return user

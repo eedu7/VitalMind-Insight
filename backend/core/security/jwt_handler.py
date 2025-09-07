@@ -44,7 +44,9 @@ class JwtHandler:
             self.algorithm,
         )
 
-    def decode(self, token: str, expected_type: JWTTokenType, verify_exp: bool = True) -> Dict[str, Any]:
+    def decode(
+        self, token: str, expected_type: JWTTokenType, verify_exp: bool = True
+    ) -> Dict[str, Any]:
         try:
             payload = jwt.decode(  # type: ignore
                 jwt=token,

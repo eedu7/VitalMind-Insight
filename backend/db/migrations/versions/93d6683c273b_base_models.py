@@ -53,7 +53,9 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
         sa.Column("uuid", sa.UUID(), nullable=False),
         sa.Column("conversation_id", sa.Integer(), nullable=False),
-        sa.Column("role", sa.Enum("SYSTEM", "USER", "ASSISTANT", "TOOL", name="role"), nullable=False),
+        sa.Column(
+            "role", sa.Enum("SYSTEM", "USER", "ASSISTANT", "TOOL", name="role"), nullable=False
+        ),
         sa.Column("content", sa.Text(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("updated_at", sa.DateTime(), nullable=False),

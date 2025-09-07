@@ -16,7 +16,9 @@ BASE_API_ENDPOINT: str = "/api/message"
 async def test_create_message_success(
     client: AsyncClient, auth_headers: Dict[str, str], message_payload: Dict[str, str]
 ):
-    response = await client.post(f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers)
+    response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers
+    )
 
     assert response.status_code == 201
 
@@ -32,7 +34,9 @@ async def test_create_message_missing_fields(
     client: AsyncClient, auth_headers: Dict[str, str], message_payload: Dict[str, str]
 ):
     message_payload.pop("conversation_uuid")
-    response = await client.post(f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers)
+    response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers
+    )
 
     assert response.status_code == 422
 
@@ -54,7 +58,9 @@ async def test_create_message_missing_header(client: AsyncClient, message_payloa
 async def test_get_message_by_uuid_success(
     client: AsyncClient, auth_headers: Dict[str, str], message_payload: Dict[str, str]
 ):
-    response = await client.post(f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers)
+    response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers
+    )
 
     message_uuid = response.json()["uuid"]
 
@@ -94,11 +100,16 @@ async def test_get_message_missing_header(client: AsyncClient, message_payload: 
 # API ENDPOINT is api/message/all/{conversation_uuidz}
 @pytest.mark.asyncio
 async def test_get_messages_by_conversation_success(
-    client: AsyncClient, message_payload: Dict[str, str], auth_headers: Dict[str, str], conversation_uuid: str
+    client: AsyncClient,
+    message_payload: Dict[str, str],
+    auth_headers: Dict[str, str],
+    conversation_uuid: str,
 ):
     await client.post(f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers)
 
-    response = await client.get(f"{BASE_API_ENDPOINT}/all/{conversation_uuid}", headers=auth_headers)
+    response = await client.get(
+        f"{BASE_API_ENDPOINT}/all/{conversation_uuid}", headers=auth_headers
+    )
 
     assert response.status_code == 200
     data: List[Dict[str, str]] = response.json()
@@ -108,7 +119,9 @@ async def test_get_messages_by_conversation_success(
 
 
 @pytest.mark.asyncio
-async def test_get_messages_by_conversation_missing_header(client: AsyncClient, conversation_uuid: str):
+async def test_get_messages_by_conversation_missing_header(
+    client: AsyncClient, conversation_uuid: str
+):
     response = await client.get(
         f"{BASE_API_ENDPOINT}/all/{conversation_uuid}",
     )
@@ -125,7 +138,9 @@ async def test_get_messages_by_conversation_missing_header(client: AsyncClient, 
 async def test_update_message_success(
     client: AsyncClient, message_payload: Dict[str, str], auth_headers: Dict[str, str]
 ):
-    response = await client.post(f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers)
+    response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers
+    )
 
     updated_payload = {
         "role": "system",
@@ -134,7 +149,9 @@ async def test_update_message_success(
 
     message_uuid = response.json()["uuid"]
 
-    response = await client.put(f"{BASE_API_ENDPOINT}/{message_uuid}", json=updated_payload, headers=auth_headers)
+    response = await client.put(
+        f"{BASE_API_ENDPOINT}/{message_uuid}", json=updated_payload, headers=auth_headers
+    )
 
     assert response.status_code == 200
 
@@ -143,7 +160,9 @@ async def test_update_message_success(
 async def test_update_message_no_headers(
     client: AsyncClient, message_payload: Dict[str, str], auth_headers: Dict[str, str]
 ):
-    response = await client.post(f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers)
+    response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers
+    )
 
     updated_payload = {
         "role": "system",
@@ -165,7 +184,9 @@ async def test_update_message_not_found(client: AsyncClient, auth_headers: Dict[
         "content": "I'm system",
     }
 
-    response = await client.put(f"{BASE_API_ENDPOINT}/{message_uuid}", json=updated_payload, headers=auth_headers)
+    response = await client.put(
+        f"{BASE_API_ENDPOINT}/{message_uuid}", json=updated_payload, headers=auth_headers
+    )
 
     assert response.status_code == 404
 
@@ -175,7 +196,9 @@ async def test_update_message_missing_fields(client: AsyncClient, auth_headers: 
     message_uuid = uuid4()
     updated_payload: Dict[str, str] = {}
 
-    response = await client.put(f"{BASE_API_ENDPOINT}/{message_uuid}", json=updated_payload, headers=auth_headers)
+    response = await client.put(
+        f"{BASE_API_ENDPOINT}/{message_uuid}", json=updated_payload, headers=auth_headers
+    )
 
     assert response.status_code == 422
 
@@ -189,7 +212,9 @@ async def test_update_message_missing_fields(client: AsyncClient, auth_headers: 
 async def test_delete_message_success(
     client: AsyncClient, message_payload: Dict[str, str], auth_headers: Dict[str, str]
 ):
-    response = await client.post(f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers)
+    response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers
+    )
 
     message_uuid = response.json()["uuid"]
 
@@ -210,7 +235,9 @@ async def test_delete_message_not_found(client: AsyncClient, auth_headers: Dict[
 async def test_delete_message_no_headers(
     client: AsyncClient, message_payload: Dict[str, str], auth_headers: Dict[str, str]
 ):
-    response = await client.post(f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers)
+    response = await client.post(
+        f"{BASE_API_ENDPOINT}/", json=message_payload, headers=auth_headers
+    )
 
     message_uuid = response.json()["uuid"]
 

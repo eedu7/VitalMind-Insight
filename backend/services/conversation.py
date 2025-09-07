@@ -13,7 +13,9 @@ class ConversationService:
     def __init__(self, crud: ConversationCRUD) -> None:
         self.crud = crud
 
-    async def get_all_conversations(self, user_id: int, session: AsyncSession) -> Sequence[Conversation]:
+    async def get_all_conversations(
+        self, user_id: int, session: AsyncSession
+    ) -> Sequence[Conversation]:
         return await self.crud.get_all_by_filters(
             filters={"user_id": user_id},
             session=session,
@@ -23,11 +25,15 @@ class ConversationService:
         conversation: Conversation | None = await self.crud.get_by_uuid(uuid, session)
 
         if not conversation:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No conversation found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="No conversation found"
+            )
 
         return conversation
 
-    async def create_conversation(self, title: str, user_id: int, session: AsyncSession) -> Conversation:
+    async def create_conversation(
+        self, title: str, user_id: int, session: AsyncSession
+    ) -> Conversation:
         try:
             conversation: Conversation = Conversation(user_id=user_id, title=title)
 
@@ -42,7 +48,8 @@ class ConversationService:
 
         if not conversation:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=f"No conversation found with the uuid {uuid}"
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No conversation found with the uuid {uuid}",
             )
 
         await self.crud.delete(conversation, session=session)
@@ -53,5 +60,6 @@ class ConversationService:
 
         if not updated:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail=f"No conversation found with the uuid {uuid}"
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No conversation found with the uuid {uuid}",
             )

@@ -37,7 +37,10 @@ async def create_message(
     session: AsyncSession = Depends(get_session),
 ):
     return await message_service.create_message(
-        conversation_uuid=data.conversation_uuid, content=data.content, role=data.role, session=session
+        conversation_uuid=data.conversation_uuid,
+        content=data.content,
+        role=data.role,
+        session=session,
     )
 
 

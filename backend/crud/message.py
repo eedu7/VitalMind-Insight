@@ -15,11 +15,15 @@ class MessageCRUD(BaseCRUD[Message]):
     ) -> None:
         super().__init__(Message)
 
-    async def create_message(self, conversation_uuid: UUID, role: Role, content: str, session: AsyncSession) -> Message:
+    async def create_message(
+        self, conversation_uuid: UUID, role: Role, content: str, session: AsyncSession
+    ) -> Message:
         stmt = (
             insert(Message)
             .values(
-                conversation_id=select(Conversation.id).where(Conversation.uuid == conversation_uuid).scalar_subquery(),
+                conversation_id=select(Conversation.id)
+                .where(Conversation.uuid == conversation_uuid)
+                .scalar_subquery(),
                 role=role,
                 content=content,
             )
@@ -33,7 +37,9 @@ class MessageCRUD(BaseCRUD[Message]):
     async def get_by_conversation_uuid(self, conversation_uuid: UUID, session: AsyncSession):
         stmt = select(Message).where(
             Message.conversation_id
-            == select(Conversation.id).where(Conversation.uuid == conversation_uuid).scalar_subquery()
+            == select(Conversation.id)
+            .where(Conversation.uuid == conversation_uuid)
+            .scalar_subquery()
         )
 
         result = await session.execute(stmt)
