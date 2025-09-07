@@ -32,7 +32,8 @@ class MessageCRUD(BaseCRUD[Message]):
 
     async def get_by_conversation_uuid(self, conversation_uuid: UUID, session: AsyncSession):
         stmt = select(Message).where(
-            Message.conversation_id == select(Conversation.id).where(Conversation.uuid == conversation_uuid).subquery()
+            Message.conversation_id
+            == select(Conversation.id).where(Conversation.uuid == conversation_uuid).scalar_subquery()
         )
 
         result = await session.execute(stmt)
