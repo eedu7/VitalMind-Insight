@@ -19,13 +19,10 @@ class MessageService:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error in creating message {e}")
 
     async def get_message_by_uuid(self, message_uuid: UUID, session: AsyncSession) -> Message:
-        try:
-            message = await self.crud.get_by_uuid(message_uuid, session)
-            if message:
-                return message
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
-        except Exception as e:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {e}")
+        message = await self.crud.get_by_uuid(message_uuid, session)
+        if message:
+            return message
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
 
     async def get_messages_by_conversation_uuid(
         self, conversation_uuid: UUID, session: AsyncSession
@@ -36,22 +33,22 @@ class MessageService:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {e}")
 
     async def update_message(self, message_uuid: UUID, role: Role, content: str, session: AsyncSession):
-        try:
-            updated = await self.crud.update_by_uuid(
-                uuid=message_uuid, values={"role": role, "content": content}, session=session
-            )
+        message = await self.get_message_by_uuid(message_uuid, session)
 
-            if not updated:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Error in updating")
+        if not message:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
 
-        except Exception as e:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {e}")
+        updated = await self.crud.update_by_uuid(
+            uuid=message_uuid, values={"role": role, "content": content}, session=session
+        )
+
+        if not updated:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Error in updating")
 
     async def delete_message(self, message_uuid: UUID, session: AsyncSession):
-        try:
-            message: Message = await self.get_message_by_uuid(message_uuid, session)
+        message: Message = await self.get_message_by_uuid(message_uuid, session)
 
-            await self.crud.delete(message, session)
+        if not message:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Message not found")
 
-        except Exception as e:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {e}")
+        await self.crud.delete(message, session)
