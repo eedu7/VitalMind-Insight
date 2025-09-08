@@ -22,7 +22,7 @@ class BaseLLMService(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def stream_response(
+    async def get_stream_response(
         self,
         prompt: str | None = None,
         messages: list[dict[str, Any]] | None = None,

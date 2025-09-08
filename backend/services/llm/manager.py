@@ -23,7 +23,9 @@ class LLMManager:
         prompt = f"Generate a short, concise conversation title (max 5 words) for this message:\n\n{prompt}"
 
         try:
-            return await self.llm.get_response(prompt)
+            title = await self.llm.get_response(prompt)
+
+            return title[1 : len(title) - 1]
         except Exception:
             words = prompt.strip().split()
             return " ".join(words[:7]).capitalize() if words else "New Conversation"
