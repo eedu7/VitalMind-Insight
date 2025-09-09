@@ -20,7 +20,7 @@ class LLMManager:
                 raise ValueError(f"Unsupported LLM type: {self.llm_type}")
 
     async def generate_title(self, prompt: str) -> str:
-        prompt = f"Generate a short, concise conversation title (max 5 words) for this message:\n\n{prompt}"
+        prompt = f"Generate a short, concise conversation title (max 4 words and no more than 38 characters) for this message:\n\n{prompt}"
 
         try:
             title = await self.llm.get_response(prompt)
@@ -28,7 +28,7 @@ class LLMManager:
             return title[1 : len(title) - 1]
         except Exception:
             words = prompt.strip().split()
-            return " ".join(words[:7]).capitalize() if words else "New Conversation"
+            return " ".join(words[:3]).capitalize() if words else "New Conversation"
 
     def get_service(self) -> BaseLLMService:
         return self.llm

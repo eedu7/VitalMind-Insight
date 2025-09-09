@@ -115,7 +115,7 @@ const ChatSidebarGroup = () => {
 			<SidebarGroupLabel>Chats</SidebarGroupLabel>
 			<ScrollArea className="h-full">
 				<SidebarGroupContent className="h-full">
-					<SidebarMenu className="space-y-2">
+					<SidebarMenu>
 						<ChatListContent />
 					</SidebarMenu>
 				</SidebarGroupContent>
@@ -147,13 +147,15 @@ const ChatListContent = () => {
 			{allConversationsQuery.data?.map((conversation) => (
 				<SidebarMenuItem key={conversation.uuid} className="group/item">
 					<SidebarMenuButton asChild>
-						<Link prefetch={false} href={`/chat/${conversation.uuid}`}>
+						<Link prefetch={false} href={`/chat/${conversation.uuid}`} title={conversation.title}>
 							{conversation.title}
 						</Link>
 					</SidebarMenuButton>
 					<ChatActionDropDown chatId={conversation.uuid} chatTitle={conversation.title} />
 				</SidebarMenuItem>
 			))}
+			{allConversationsQuery.data && allConversationsQuery.data.length > 8 && <div className="h-16 shrink-0" />}
+
 			<ChatModals />
 		</>
 	);
