@@ -1,7 +1,7 @@
 "use client";
+import { Prompt } from "@/features/prompts";
 import { cn } from "@/lib/utils";
 import { Merriweather_Sans } from "next/font/google";
-import { Prompt } from "./_components/Prompt";
 
 const merriweatherSans = Merriweather_Sans({
 	variable: "--font-merriweather-sans",

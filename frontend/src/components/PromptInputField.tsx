@@ -19,13 +19,13 @@ export const PromptInputField = ({ prompt, setPrompt, onSubmit, className, isPen
 				e.stopPropagation();
 				onSubmit();
 			}}
-			className={cn("w-full max-w-4xl", className)}
+			className={cn("w-full p-2 ", className)}
 		>
-			<div className="space-y-4 rounded-lg border p-2 shadow shadow-orange-200 outline">
+			<div className="space-y-2 rounded-lg border p-2 shadow shadow-orange-200 outline">
 				<Textarea
 					value={prompt}
 					onChange={(e) => setPrompt(e.target.value)}
-					className="max-w-full border-none shadow-none outline-none focus-visible:ring-0"
+					className="max-h-64 min-h-[3rem] w-full resize-y overflow-y-auto border-none shadow-none outline-none focus-visible:ring-0"
 					placeholder="How can I help you today?"
 				/>
 				<div className="flex items-center justify-between px-3 py-1">

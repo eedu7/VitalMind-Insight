@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { categories } from "./categories";
+import { categories } from "../categories";
 
 export const QuickPrompts = () => {
 	return (

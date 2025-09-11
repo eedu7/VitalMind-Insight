@@ -8,9 +8,9 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
 	return (
-		<SidebarProvider>
+		<SidebarProvider defaultOpen={false}>
 			<AppSidebar />
-			<main className="w-full">{children}</main>
+			<main className="mx-auto w-full max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-4xl">{children}</main>
 		</SidebarProvider>
 	);
 }
