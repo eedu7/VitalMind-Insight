@@ -1,0 +1,13 @@
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: vital-mind-ollama
+    restart: always
+    ports:
+      - "11435:11434"
+    volumes:
+      - ./models:/root/.ollama
+    entrypoint: > 
+      sh -c "ollama serve & sleep 5 && ollama pull llama3.1:8b && wait"
+

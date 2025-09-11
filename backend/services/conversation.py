@@ -7,13 +7,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.conversation import ConversationCRUD
 from db.models import Conversation
+from db.models.message import Role
 from services.llm import LLMManager
+from services.message import MessageService
 
 
 class ConversationService:
-    def __init__(self, crud: ConversationCRUD, llm: LLMManager) -> None:
+    def __init__(self, crud: ConversationCRUD, llm: LLMManager, message_service: MessageService) -> None:
         self.crud = crud
         self.llm = llm
+        self.message_service = message_service
 
     async def get_all_conversations(self, user_id: int, session: AsyncSession) -> Sequence[Conversation]:
         return await self.crud.get_all_by_filters(
@@ -34,7 +37,11 @@ class ConversationService:
 
             conversation: Conversation = Conversation(user_id=user_id, title=llm_generated_title)
 
-            await self.crud.create(conversation, session)
+            new_conversation = await self.crud.create(conversation, session)
+
+            await self.message_service.create_message(
+                conversation_uuid=new_conversation.uuid, content=title, role=Role.USER, session=session
+            )
 
             return conversation
         except SQLAlchemyError as e:

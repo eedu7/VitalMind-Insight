@@ -1,54 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { PromptInputField } from "@/features/prompt-input-field";
+"use client";
 import { cn } from "@/lib/utils";
-import { IconBulb, IconCoffee, IconHeart, IconPencil, IconSchool, TablerIcon } from "@tabler/icons-react";
 import { Merriweather_Sans } from "next/font/google";
+import { Prompt } from "./_components/Prompt";
 
 const merriweatherSans = Merriweather_Sans({
 	variable: "--font-merriweather-sans",
 	subsets: ["latin"],
 });
-
-type Option = {
-	title: string;
-	icon: TablerIcon;
-};
-
-const options: Option[] = [
-	{
-		title: "Write",
-		icon: IconPencil,
-	},
-	{
-		title: "Learn",
-		icon: IconSchool,
-	},
-
-	{
-		title: "Life stuff",
-		icon: IconCoffee,
-	},
-	{
-		title: "Our choice",
-		icon: IconBulb,
-	},
-	{
-		title: "Ideas",
-		icon: IconBulb,
-	},
-	{
-		title: "Design",
-		icon: IconPencil,
-	},
-	{
-		title: "Health",
-		icon: IconHeart,
-	},
-	{
-		title: "Explore",
-		icon: IconSchool,
-	},
-];
 
 export default function Page() {
 	return (
@@ -64,20 +22,7 @@ export default function Page() {
 						Ready when you are.
 					</h1>
 				</div>
-				<PromptInputField />
-				<div className="flex flex-wrap items-center justify-center gap-1 md:gap-2">
-					{options.map(({ title, icon: Icon }) => (
-						<Button
-							variant="outline"
-							key={title}
-							className="flex transform items-center transition-transform hover:scale-105 hover:-rotate-1"
-							disabled
-						>
-							<Icon />
-							<span>{title}</span>
-						</Button>
-					))}
-				</div>
+				<Prompt />
 			</div>
 		</div>
 	);

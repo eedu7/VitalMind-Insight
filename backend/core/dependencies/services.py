@@ -18,7 +18,8 @@ class ServiceContainer:
         return UserService(self.user_crud)
 
     def get_conversation_service(self) -> ConversationService:
-        return ConversationService(self.conversation_crud, self.llm_manager)
+        message_service: MessageService = self.get_message_service()
+        return ConversationService(self.conversation_crud, self.llm_manager, message_service)
 
     def get_message_service(self) -> MessageService:
         return MessageService(self.message_crud)
