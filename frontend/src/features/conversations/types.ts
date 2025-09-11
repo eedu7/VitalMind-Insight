@@ -1,5 +1,4 @@
 import { Message } from "../messages";
-import { updateConversationApi } from "./api";
 
 export type Conversation = {
 	uuid: string;
@@ -10,3 +9,5 @@ export type Conversation = {
 export type GetConversationById = Pick<Conversation, "uuid">;
 export type UpdateConversation = Omit<Conversation, "messages">;
 export type DeleteConversation = Pick<Conversation, "uuid">;
+export type CreateConversation = Pick<Conversation, "title">;
+
