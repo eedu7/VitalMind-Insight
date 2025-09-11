@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { IconAdjustmentsHorizontal, IconPlus } from "@tabler/icons-react";
+import { Textarea } from "./ui/textarea";
 
 interface Props {
 	prompt: string;
@@ -19,7 +19,7 @@ export const PromptInputField = ({ prompt, setPrompt, onSubmit, className, isPen
 				e.stopPropagation();
 				onSubmit();
 			}}
-			className={cn("w-full p-2 ", className)}
+			className={cn("w-full p-2", className)}
 		>
 			<div className="space-y-2 rounded-lg border p-2 shadow shadow-orange-200 outline">
 				<Textarea
