@@ -1,6 +1,6 @@
 import apiClient from "@/lib/api";
 import { DeleteResponse, UpdateResponse } from "../types";
-import { Conversation, DeleteConversation, GetConversationById, UpdateConversation } from "./types";
+import { Conversation, CreateConversation, DeleteConversation, GetConversationById, UpdateConversation } from "./types";
 
 const CONVERSATION_URL = "/api/conversation";
 
@@ -23,5 +23,12 @@ export async function updateConversationApi({ title, uuid }: UpdateConversation)
 
 export async function deleteConversationApi({ uuid }: DeleteConversation): Promise<DeleteResponse> {
 	const res = await apiClient.delete<DeleteResponse>(`${CONVERSATION_URL}/${uuid}`);
+	return res.data;
+}
+
+export async function createConversationApi({ title }: CreateConversation): Promise<Conversation> {
+	const res = await apiClient.post<Conversation>(`${CONVERSATION_URL}/`, {
+		title,
+	});
 	return res.data;
 }
