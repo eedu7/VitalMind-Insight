@@ -9,22 +9,23 @@ const isExcludedPath = (pathname: string) =>
 	EXCLUDED_PATHS.some((path) => pathname.startsWith(path)) || pathname.includes(".");
 
 export async function middleware(req: NextRequest) {
-	const { pathname } = req.nextUrl;
+	// const { pathname } = req.nextUrl;
 
-	if (isExcludedPath(pathname)) {
-		return NextResponse.next();
-	}
-	const token = req.cookies.get("access_token")?.value;
-	if (token) {
-		return NextResponse.next();
-	}
+	// if (isExcludedPath(pathname)) {
+	// 	return NextResponse.next();
+	// }
+	// const token = req.cookies.get("access_token")?.value;
+	// if (token) {
+	// 	return NextResponse.next();
+	// }
 
-	if (isPublicRoute(pathname) || pathname === "/") {
-		return NextResponse.next();
-	}
+	// if (isPublicRoute(pathname) || pathname === "/") {
+	// 	return NextResponse.next();
+	// }
 
-	const loginUrl = new URL("/login", req.url);
-	return NextResponse.redirect(loginUrl);
+	// const loginUrl = new URL("/login", req.url);
+	// return NextResponse.redirect(loginUrl);
+	return NextResponse.next();
 }
 
 export const config = {

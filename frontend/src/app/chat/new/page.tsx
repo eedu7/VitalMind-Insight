@@ -1,82 +1,84 @@
-import { Card, CardContent } from "@/components/ui/card";
-import * as TablerIcon from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
+import { PromptInputField } from "@/features/prompt-input-field";
+import { cn } from "@/lib/utils";
+import { IconBulb, IconCoffee, IconHeart, IconPencil, IconSchool, TablerIcon } from "@tabler/icons-react";
+import { Merriweather_Sans } from "next/font/google";
 
-const iconsList = [
+const merriweatherSans = Merriweather_Sans({
+	variable: "--font-merriweather-sans",
+	subsets: ["latin"],
+});
+
+type Option = {
+	title: string;
+	icon: TablerIcon;
+};
+
+const options: Option[] = [
 	{
-		icon: TablerIcon.IconEdit,
-		name: "IconEdit",
+		title: "Write",
+		icon: IconPencil,
 	},
 	{
-		icon: TablerIcon.IconEditOff,
-		name: "IconEditOff",
+		title: "Learn",
+		icon: IconSchool,
+	},
+
+	{
+		title: "Life stuff",
+		icon: IconCoffee,
 	},
 	{
-		icon: TablerIcon.IconEditCircle,
-		name: "IconEditCircle",
+		title: "Our choice",
+		icon: IconBulb,
 	},
 	{
-		icon: TablerIcon.IconEditCircleOff,
-		name: "IconEditCircleOff",
+		title: "Ideas",
+		icon: IconBulb,
 	},
 	{
-		icon: TablerIcon.IconPencilExclamation,
-		name: "IconPencilExclamation",
+		title: "Design",
+		icon: IconPencil,
 	},
 	{
-		icon: TablerIcon.IconPencilCancel,
-		name: "IconPencilCancel",
+		title: "Health",
+		icon: IconHeart,
 	},
 	{
-		icon: TablerIcon.IconPencilHeart,
-		name: "IconPencilHeart",
-	},
-	{
-		icon: TablerIcon.IconPencil,
-		name: "IconPencil",
-	},
-	{
-		icon: TablerIcon.IconPencilSearch,
-		name: "IconPencilSearch",
-	},
-	{
-		icon: TablerIcon.IconSearch,
-		name: "IconSearch",
-	},
-	{
-		icon: TablerIcon.IconSearchOff,
-		name: "IconSearchOff",
-	},
-	{
-		icon: TablerIcon.IconEyeSearch,
-		name: "IconEyeSearch",
-	},
-	{
-		icon: TablerIcon.IconMapSearch,
-		name: "IconMapSearch",
+		title: "Explore",
+		icon: IconSchool,
 	},
 ];
 
 export default function Page() {
 	return (
-		<div className="flex h-screen w-full items-center justify-center border p-4 shadow-md">
-			<div className="grid grid-cols-6 gap-4">
-				{iconsList.map(({ icon: Icon, name }, index) => (
-					<IconCard key={index} name={name}>
-						<Icon />
-					</IconCard>
-				))}
+		<div className="mx-auto grid h-screen place-items-center p-2 md:max-w-2xl lg:max-w-4xl">
+			<div className="flex h-full w-full flex-col items-center justify-center gap-y-8">
+				<div>
+					<h1
+						className={cn(
+							"text-center text-2xl font-bold tracking-wide md:text-4xl lg:tracking-wider",
+							merriweatherSans.className
+						)}
+					>
+						Ready when you are.
+					</h1>
+				</div>
+				<PromptInputField />
+				<div className="flex flex-wrap items-center justify-center gap-1 md:gap-2">
+					{options.map(({ title, icon: Icon }) => (
+						<Button
+							variant="outline"
+							key={title}
+							className="flex transform items-center transition-transform hover:scale-105 hover:-rotate-1"
+							disabled
+						>
+							<Icon />
+							<span>{title}</span>
+						</Button>
+					))}
+				</div>
 			</div>
 		</div>
 	);
 }
-
-const IconCard = ({ children, name }: { children: React.ReactElement; name: string }) => {
-	return (
-		<Card className="transform cursor-pointer opacity-70 transition-all duration-300 ease-in-out hover:translate-x-1.5 hover:translate-y-1 hover:opacity-100 hover:shadow-lg">
-			<CardContent className="flex flex-col items-center justify-center gap-2">
-				{children}
-				<small className="text-xs">{name}</small>
-			</CardContent>
-		</Card>
-	);
-};
