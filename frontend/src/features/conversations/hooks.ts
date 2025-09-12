@@ -9,7 +9,7 @@ import {
 	updateConversationApi,
 } from "./api";
 
-export function useConversations() {
+export function useConversations(conversationId?: string) {
 	const queryClient = useQueryClient();
 
 	const router = useRouter();
@@ -19,13 +19,11 @@ export function useConversations() {
 		queryFn: getAllConversationApi,
 	});
 
-	const getConversationById = (conversationId: string) => {
-		return useQuery({
-			queryKey: ["getConversationById", conversationId],
-			queryFn: () => getConversationByIdApi({ uuid: conversationId }),
-			enabled: !!conversationId,
-		});
-	};
+	const getConversationById = useQuery({
+		queryKey: ["getConversationById", conversationId],
+		queryFn: () => getConversationByIdApi({ uuid: conversationId! }),
+		enabled: !!conversationId,
+	});
 	const updateConversation = useMutation({
 		mutationKey: ["updateConversation"],
 		mutationFn: updateConversationApi,

@@ -8,13 +8,17 @@ interface Props {
 }
 
 export const PageView = ({ chatId }: Props) => {
-	const { getConversationById } = useConversations();
+	const { getConversationById } = useConversations(chatId);
 
-	const conversation = getConversationById(chatId);
+	const { data } = getConversationById;
 
 	return (
 		<div className="mx-auto flex h-screen flex-col place-items-center p-2 py-4 md:max-w-2xl lg:max-w-4xl">
-			<div className="flex-1"></div>
+			<div className="flex-1">
+				{data?.messages?.map(({ content }, index) => (
+					<div key={index}>{content}</div>
+				))}
+			</div>
 			<Prompt />
 		</div>
 	);
