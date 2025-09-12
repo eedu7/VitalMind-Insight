@@ -1,6 +1,4 @@
-def main():
-    print("Hello from llm-backend!")
-
+import uvicorn
 
 if __name__ == "__main__":
-    main()
+    uvicorn.run("core.server:app", port=8082, reload=True)
