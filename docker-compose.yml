@@ -18,7 +18,7 @@ services:
       - "${PORT}"
 
   database:
-    image: postgres:16.4-slim
+    image: postgres:17.6-bookworm
     container_name: vitalmind-database
     restart: always
     env_file:
@@ -35,7 +35,7 @@ services:
       - "${DB_PORT}"
 
   test-database:
-    image: postgres:16.4-slim
+    image: postgres:17.6-bookworm
     container_name: vitalmind-test-database
     restart: always
     env_file:
