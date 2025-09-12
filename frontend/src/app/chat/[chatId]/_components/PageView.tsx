@@ -15,13 +15,12 @@ export const PageView = ({ chatId }: Props) => {
 	const { data } = getConversationById;
 
 	return (
-		<div className="mx-auto flex h-screen flex-col p-2 py-4 md:max-w-2xl lg:max-w-4xl">
-			{/* Chat messages section */}
-			<ScrollArea className="flex-1">
+		<div className="mx-auto flex h-screen max-h-screen flex-col overflow-hidden p-2 py-4 md:max-w-2xl lg:max-w-4xl">
+			{/* TODO: ScrollArea is not working properly  */}
+			<ScrollArea className="flex-1 overflow-auto">
 				{data?.messages ? <ChatMessage messages={data.messages} /> : null}
 			</ScrollArea>
 
-			{/* Prompt fixed at bottom */}
 			<div className="pt-2">
 				<Prompt />
 			</div>
@@ -35,7 +34,7 @@ interface ChatMessageProps {
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ messages }) => {
 	return (
-		<div className="flex w-full flex-col gap-y-4">
+		<div className="flex w-full flex-col gap-y-4 pr-4">
 			{messages.map(({ content, role }, index) => (
 				<div key={index} className={cn("flex w-full", role === "user" ? "justify-end" : "justify-start")}>
 					<p className={cn("w-full rounded-lg p-2", role === "user" && "bg-accent max-w-[75%]")}>{content}</p>
