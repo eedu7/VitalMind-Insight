@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List, Literal
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -50,6 +51,9 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_EXPIRE_MINUTES: int = 60 * 24
     JWT_REFRESH_EXPIRE_MINUTES: int = 60 * 24 * 7
+
+    # LLM
+    LLM_SECRET_TOKEN: str = Field("LLM_SECRET_TOKEN", description="Secret token for LLM API")
 
     # Environment
     ENVIRONMENT: str = "development"
