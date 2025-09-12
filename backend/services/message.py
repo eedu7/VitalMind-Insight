@@ -12,15 +12,11 @@ class MessageService:
     def __init__(self, crud: MessageCRUD) -> None:
         self.crud = crud
 
-    async def create_message(
-        self, conversation_uuid: UUID, content: str, role: Role, session: AsyncSession
-    ) -> Message:
+    async def create_message(self, conversation_uuid: UUID, content: str, role: Role, session: AsyncSession) -> Message:
         try:
             return await self.crud.create_message(conversation_uuid, role, content, session)
         except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error in creating message {e}"
-            )
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error in creating message {e}")
 
     async def get_message_by_uuid(self, message_uuid: UUID, session: AsyncSession) -> Message:
         message = await self.crud.get_by_uuid(message_uuid, session)
@@ -36,9 +32,7 @@ class MessageService:
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Error: {e}")
 
-    async def update_message(
-        self, message_uuid: UUID, role: Role, content: str, session: AsyncSession
-    ):
+    async def update_message(self, message_uuid: UUID, role: Role, content: str, session: AsyncSession):
         message = await self.get_message_by_uuid(message_uuid, session)
 
         if not message:
