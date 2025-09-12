@@ -1,4 +1,6 @@
+export type MessageRoleType = "user" | "assistant" | "system" | "tool";
+
 export type Message = {
-	role: "user" | "assistant" | "system" | "tool";
+	role: MessageRoleType;
 	content: string;
 };
