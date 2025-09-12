@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const PUBLIC_ROUTES = ["/login", "/register"];
 const EXCLUDED_PATHS = ["/_next", "/favicon.ico"];
