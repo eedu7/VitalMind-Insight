@@ -1,7 +1,7 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.dependencies import AuthenticationRequired, get_current_active_user, services
@@ -39,11 +39,12 @@ async def get_conversation_by_uuid(
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=ConversationCreateOut)
 async def create_conversation(
     data: ConversationCreate,
+    request: Request,
     current_user: User = Depends(get_current_active_user),
     conversation_service: ConversationService = Depends(services.get_conversation_service),
     session: AsyncSession = Depends(get_session),
 ):
-    return await conversation_service.create_conversation(data.title, current_user.id, session)
+    return await conversation_service.create_conversation(data.title, current_user.id, session, request)
 
 
 @router.put("/{conversation_uuid}", status_code=status.HTTP_200_OK)

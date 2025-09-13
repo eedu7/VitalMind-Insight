@@ -1,10 +1,13 @@
 from typing import Sequence
 from uuid import UUID
 
-from fastapi import HTTPException, status
+import httpx
+from fastapi import HTTPException, Request, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from core.config import settings
+from core.security.auth_cookies_manager import AuthCookieKey
 from crud.conversation import ConversationCRUD
 from db.models import Conversation
 from db.models.message import Role
@@ -31,19 +34,45 @@ class ConversationService:
 
         return conversation
 
-    async def create_conversation(self, title: str, user_id: int, session: AsyncSession) -> Conversation:
+    async def create_conversation(
+        self, title: str, user_id: int, session: AsyncSession, request: Request
+    ) -> Conversation:
         try:
-            llm_generated_title = await self.llm.generate_title(title)
+            headers_jwt: str = request.headers.get("Authorization", "")
+            cookies_jwt: str = request.cookies.get(AuthCookieKey.ACCESS, "")
 
-            conversation: Conversation = Conversation(user_id=user_id, title=llm_generated_title)
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    "http://localhost:8082/api/llm/title",
+                    json={"model": "llama3.1:8b", "prompt": title},
+                    headers={
+                        "Authorization": headers_jwt if headers_jwt else f"Bearer {cookies_jwt}",
+                        "X-LLM-Backend-Token": settings.LLM_SECRET_TOKEN,
+                    },
+                )
 
-            new_conversation = await self.crud.create(conversation, session)
+                if response.status_code == 403:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail=response.json()["detail"],
+                    )
 
-            await self.message_service.create_message(
-                conversation_uuid=new_conversation.uuid, content=title, role=Role.USER, session=session
-            )
+                if response.status_code == 200:
+                    data = response.json()
 
-            return conversation
+                    conversation: Conversation = Conversation(user_id=user_id, title=data.get("title", ""))
+                    new_conversation = await self.crud.create(conversation, session)
+
+                    await self.message_service.create_message(
+                        conversation_uuid=new_conversation.uuid, content=title, role=Role.USER, session=session
+                    )
+                    return conversation
+                else:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="[Error] in generating conversation.",
+                    )
+
         except SQLAlchemyError as e:
             raise ValueError("Database error: {e}") from e
 
